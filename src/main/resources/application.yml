@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATASOURCE_URL_RDS}
+    username: ${DATASOURCE_USERNAME_RDS}
+    password: ${DATASOURCE_PASSWORD_RDS}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  redis:
+    host: localhost
+    port: 6379
