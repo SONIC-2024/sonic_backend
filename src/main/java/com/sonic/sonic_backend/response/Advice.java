@@ -28,4 +28,10 @@ public class Advice {
     public Response RefreshTokenExpiredResponse() {
         return Response.fail(HttpStatus.UNAUTHORIZED, "refresh token이 만료되었습니다.");
     }
+
+    @ExceptionHandler(WrongEmailAddress.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response WrongEmailAddressResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "이메일 전송에 실패했습니다. 이메일주소를 확인해주세요.");
+    }
 }

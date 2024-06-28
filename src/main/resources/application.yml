@@ -17,3 +17,15 @@ spring:
   redis:
     host: ${redis.host}
     port: ${redis.port}
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_EMAIL}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

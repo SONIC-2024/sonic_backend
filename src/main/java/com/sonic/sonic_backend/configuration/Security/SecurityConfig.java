@@ -47,7 +47,8 @@ public class SecurityConfig  {
             "/auth/email",
             "/auth/password",
             "/error",
-            "/auth/reissue"};
+            "/auth/reissue",
+            "/auth/send-mail"};
 
 
     @Bean

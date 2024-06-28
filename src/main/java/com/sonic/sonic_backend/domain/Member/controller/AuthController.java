@@ -1,6 +1,7 @@
 package com.sonic.sonic_backend.domain.Member.controller;
 
 import com.sonic.sonic_backend.domain.Member.dto.GeneralSignInRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.MailSendRequestDto;
 import com.sonic.sonic_backend.domain.Member.dto.ReissueDto;
 import com.sonic.sonic_backend.domain.Member.dto.SignUpRequestDto;
 import com.sonic.sonic_backend.domain.Member.service.AuthService;
@@ -41,6 +42,14 @@ public class AuthController {
     @PostMapping("/reissue")
     public Response reIssue(@RequestBody ReissueDto reIssueDto) {
         return success(REISSUE_SUCCESS, authService.reissue(reIssueDto));
+    }
+
+    @Operation(summary = "인증 이메일 보내기")
+    @ResponseStatus(OK)
+    @PostMapping("/send-mail")
+    public Response reIssue(@RequestBody MailSendRequestDto mailSendRequestDto) {
+        authService.sendMail(mailSendRequestDto);
+        return success(SEND_EMAIL_SUCCESS);
     }
 
 }

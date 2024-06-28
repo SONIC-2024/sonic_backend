@@ -1,12 +1,10 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
-import com.sonic.sonic_backend.domain.Member.dto.GeneralSignInRequestDto;
-import com.sonic.sonic_backend.domain.Member.dto.ReissueDto;
-import com.sonic.sonic_backend.domain.Member.dto.SignUpRequestDto;
-import com.sonic.sonic_backend.domain.Member.dto.TokenDto;
+import com.sonic.sonic_backend.domain.Member.dto.*;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.entity.RefreshToken;
+import com.sonic.sonic_backend.domain.Member.repository.AuthCodeRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.repository.RefreshTokenRepository;
@@ -41,14 +39,22 @@ public class AuthService {
     private final MemberGeneralRepository memberGeneralRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final EmailService emailService;
+    private final AuthCodeRepository authCodeRepository;
 
     @Transactional
+    public void sendMail(MailSendRequestDto mailSendRequestDto) {
+        String email = mailSendRequestDto.getEmail();
+        emailService.joinEmail(email);
+    }
+
+                         @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
         String email = signUpRequestDto.getEmail();
         //중복이메일검증
         checkIfDuplicated(email);
         //유효이메일검증
-        checkValidEmail(signUpRequestDto.getEmailCode());
+        checkValidEmail(signUpRequestDto.getEmail(), signUpRequestDto.getEmailCode());
         saveMember(signUpRequestDto);
     }
 
@@ -136,8 +142,11 @@ public class AuthService {
             throw new DuplicatedEmail();
         }
     }
-    private void checkValidEmail(String email) {
-
+    private void checkValidEmail(String email, int authCode) {
+        Optional<Integer> foundAuthCodeOptional = authCodeRepository.findById(email);
+        if(foundAuthCodeOptional.isEmpty()) throw new EmailNotValid();
+        int foundAuthCode = foundAuthCodeOptional.get();
+        if(foundAuthCode!=authCode) throw new EmailNotValid();
     }
 
     private WeekAttendance getEmptyWeekAttendance() {

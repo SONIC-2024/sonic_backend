@@ -22,7 +22,7 @@ public class SignUpRequestDto {
     private String nickname;
     private String hand;
     private String passwordCheck;
-    private String emailCode;
+    private int emailCode;
 
     public  Member toMemberEntity(String email, MemberProfile memberProfile, Attendance attendance, WeekAttendance weekAttendance) {
         return Member.builder()

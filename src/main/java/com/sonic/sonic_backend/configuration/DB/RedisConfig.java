@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.configuration.DB;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,18 @@ public class RedisConfig {
         System.out.println("done settin connection");
         redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
         redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));  // value
+        System.out.println(redisTemplate.getConnectionFactory());
+        return redisTemplate;
+    }
+    @Bean
+    @Qualifier("redisTemplateForEmail")
+    public RedisTemplate<?, ?> redisTemplateForEmail() {
+        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+        System.out.println("$%$%"+redisTemplate);
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        System.out.println("done settin connection");
+        redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));  // value
         System.out.println(redisTemplate.getConnectionFactory());
         return redisTemplate;
     }
