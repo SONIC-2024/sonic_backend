@@ -14,9 +14,18 @@ public class Advice {
     public Response DuplicateEmailResponse() {
         return Response.fail(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다");
     }
+
     @ExceptionHandler(EmailNotValid.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response EmailNotValidResponse() {
-        return Response.fail(HttpStatus.CONFLICT, "이메일 인증을 다시 확인해주세요");
+    public Response EmailNotValidResponse() {return Response.fail(HttpStatus.CONFLICT, "이메일 인증을 다시 확인해주세요");}
+
+    @ExceptionHandler(MemberNotFound.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response UserNotFoundResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "회원이 존재하지 않습니다");}
+
+    @ExceptionHandler(RefreshTokenExpired.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response RefreshTokenExpiredResponse() {
+        return Response.fail(HttpStatus.UNAUTHORIZED, "refresh token이 만료되었습니다.");
     }
 }

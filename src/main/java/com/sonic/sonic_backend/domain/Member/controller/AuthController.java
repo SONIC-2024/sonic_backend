@@ -1,5 +1,7 @@
 package com.sonic.sonic_backend.domain.Member.controller;
 
+import com.sonic.sonic_backend.domain.Member.dto.GeneralSignInRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.ReissueDto;
 import com.sonic.sonic_backend.domain.Member.dto.SignUpRequestDto;
 import com.sonic.sonic_backend.domain.Member.service.AuthService;
 import com.sonic.sonic_backend.response.Response;
@@ -25,6 +27,20 @@ public class AuthController {
     public Response signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
         authService.signUp(signUpRequestDto);
         return success(SIGN_UP_SUCCESS);
+    }
+
+    @Operation(summary = "일반 로그인")
+    @ResponseStatus(OK)
+    @PostMapping("/sign-in/general")
+    public Response signInGeneral(@RequestBody GeneralSignInRequestDto generalSignInRequestDto) {
+        return success(SIGN_IN_SUCCESS,authService.signInGeneral(generalSignInRequestDto));
+    }
+
+    @Operation(summary = "액세스 토큰 재발급")
+    @ResponseStatus(OK)
+    @PostMapping("/reissue")
+    public Response reIssue(@RequestBody ReissueDto reIssueDto) {
+        return success(REISSUE_SUCCESS, authService.reissue(reIssueDto));
     }
 
 }

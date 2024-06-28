@@ -30,7 +30,7 @@ public class SignUpRequestDto {
                 .memberProfile(memberProfile)
                 .attendance(attendance)
                 .weekAttendance(weekAttendance)
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
     }
     public  MemberGeneral toMemberGeneralEntity(Member member, String password) {
