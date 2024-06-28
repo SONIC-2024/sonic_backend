@@ -20,8 +20,8 @@ public class Advice {
     public Response EmailNotValidResponse() {return Response.fail(HttpStatus.CONFLICT, "이메일 인증을 다시 확인해주세요");}
 
     @ExceptionHandler(MemberNotFound.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response UserNotFoundResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "회원이 존재하지 않습니다");}
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response UserNotFoundResponse() {return Response.fail(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다");}
 
     @ExceptionHandler(RefreshTokenExpired.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

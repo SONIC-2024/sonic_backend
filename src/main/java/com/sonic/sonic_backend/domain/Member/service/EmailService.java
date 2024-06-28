@@ -43,8 +43,20 @@ public class EmailService {
         //4. redis에 저장
         authCodeRepository.save(authCode, email);
     }
+    public void joinEmail(String email, String newPassword) {
+        String mailAddress = email;
+        String title = "SONIC 비밀번호 찾기를 위한 이메일입니다";
+        String content =
+                "안녕하세요 SONIC 입니다" +
+                        "<br><br>" +
+                        "비밀번호가 변경되었습니다. 새로운 비밀번호로 로그인 후 비밀번호를 다시 변경해주세요"+
+                        "변경된 비밀번호는 " + newPassword + "입니다." +
+                        "<br>";
+        //3. 메일 발송
+        sendMail(mailAddress, title, content);
+    }
 
-    private void sendMail(String mailAddress, String title, String content) {
+    private void sendMail(String mailAddress, String title, String content) throws RuntimeException {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
@@ -53,7 +65,7 @@ public class EmailService {
             helper.setSubject(title); // email title
             helper.setText(content, true); // content, html: true
             javaMailSender.send(message);
-        } catch (SMTPAddressFailedException e) {
+        } catch (SendFailedException e) {
             throw new WrongEmailAddress();
         } catch (MessagingException e) {
             throw new RuntimeException("이메일 전송에 실패했습니다");

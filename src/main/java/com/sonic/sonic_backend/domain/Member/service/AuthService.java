@@ -3,6 +3,7 @@ package com.sonic.sonic_backend.domain.Member.service;
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
 import com.sonic.sonic_backend.domain.Member.dto.*;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
+import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.entity.RefreshToken;
 import com.sonic.sonic_backend.domain.Member.repository.AuthCodeRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
@@ -16,6 +17,7 @@ import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
 import com.sonic.sonic_backend.exception.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -86,6 +88,26 @@ public class AuthService {
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
                 .build();
+    }
+
+    @Transactional
+    public void findPassword(MailSendRequestDto mailSendRequestDto) {
+        // 가입된 이메일 존재하는지 확인
+        String email = mailSendRequestDto.getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(()->new MemberNotFound());
+        // 메일보내기
+        String newPassword = generateRandomString();
+        emailService.joinEmail(email, newPassword);
+        // 바뀐 패스워드 저장
+        memberGeneralRepository.findByMember(member).changePassword(passwordEncoder.encode(newPassword));
+    }
+
+    public String generateRandomString() {
+        int length = 8;
+        boolean useLetters = true;
+        boolean useNumbers = false;
+        return RandomStringUtils.random(length, useLetters, useNumbers);
     }
 
     private RefreshToken validateRefreshToken(ReissueDto reIssueDto, Optional<RefreshToken> refreshTokenOptional) {

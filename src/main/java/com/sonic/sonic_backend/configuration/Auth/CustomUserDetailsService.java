@@ -29,9 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member =  memberRepository.findByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다"));
 
-        return memberGeneralRepository.findByMember(member)
-                .map((memberGeneral)->createUserDetails(memberGeneral, member))
-                .orElseThrow(()-> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다"));
+        return createUserDetails(memberGeneralRepository.findByMember(member), member);
     }
 
     public UserDetails createUserDetails(MemberGeneral memberGeneral, Member member) {

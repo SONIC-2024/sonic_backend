@@ -52,4 +52,12 @@ public class AuthController {
         return success(SEND_EMAIL_SUCCESS);
     }
 
+    @Operation(summary = "비밀번호 찾기")
+    @ResponseStatus(OK)
+    @PatchMapping("/password")
+    public Response findPassword(@RequestBody MailSendRequestDto mailSendRequestDto) {
+        authService.findPassword(mailSendRequestDto);
+        return success(SEND_EMAIL_SUCCESS);
+    }
+
 }

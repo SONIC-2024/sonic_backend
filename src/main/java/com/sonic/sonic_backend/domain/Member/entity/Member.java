@@ -40,4 +40,5 @@ public class Member extends BaseEntity {
     @OneToOne(optional = false)
     @JoinColumn(name="week_attendance_id")
     private WeekAttendance weekAttendance;
+
 }

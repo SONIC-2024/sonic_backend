@@ -24,4 +24,6 @@ public class MemberGeneral extends BaseEntity {
     @OneToOne(optional = false)
     @JoinColumn(name="member_id")
     private Member member;
+
+    public void changePassword(String password) {this.password = password;}
 }
