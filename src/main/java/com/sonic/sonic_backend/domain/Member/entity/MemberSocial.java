@@ -22,6 +22,9 @@ public class MemberSocial extends BaseEntity {
     @ColumnDefault("'KAKAO'")
     private String provider;
 
+    @Column(name="social_id")
+    private Long socialId;
+
     @OneToOne(optional = false)
     @JoinColumn(name="member_id")
     private Member member;

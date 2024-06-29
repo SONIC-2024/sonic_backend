@@ -1,4 +1,4 @@
-package com.sonic.sonic_backend.domain.Member.dto;
+package com.sonic.sonic_backend.domain.Member.dto.general;
 
 import lombok.Builder;
 import lombok.Getter;

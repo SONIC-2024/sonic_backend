@@ -1,15 +1,17 @@
 package com.sonic.sonic_backend.domain.Member.controller;
 
-import com.sonic.sonic_backend.domain.Member.dto.GeneralSignInRequestDto;
-import com.sonic.sonic_backend.domain.Member.dto.MailSendRequestDto;
-import com.sonic.sonic_backend.domain.Member.dto.ReissueDto;
-import com.sonic.sonic_backend.domain.Member.dto.SignUpRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.general.GeneralSignInRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.general.MailSendRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.common.ReissueDto;
+import com.sonic.sonic_backend.domain.Member.dto.common.SignUpRequestDto;
 import com.sonic.sonic_backend.domain.Member.service.AuthService;
 import com.sonic.sonic_backend.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 import static com.sonic.sonic_backend.response.Message.*;
 import static org.springframework.http.HttpStatus.OK;
@@ -35,6 +37,13 @@ public class AuthController {
     @PostMapping("/sign-in/general")
     public Response signInGeneral(@RequestBody GeneralSignInRequestDto generalSignInRequestDto) {
         return success(SIGN_IN_SUCCESS,authService.signInGeneral(generalSignInRequestDto));
+    }
+
+    @Operation(summary = "카카오 로그인")
+    @ResponseStatus(OK)
+    @GetMapping("/sign-in/kakao")
+    public Response signInKakao(@RequestParam("authCode") String authCode) throws IOException {
+        return success(SIGN_IN_SUCCESS,authService.signInKakao(authCode));
     }
 
     @Operation(summary = "액세스 토큰 재발급")

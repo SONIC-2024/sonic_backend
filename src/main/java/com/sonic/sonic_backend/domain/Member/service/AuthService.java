@@ -1,14 +1,15 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
-import com.sonic.sonic_backend.domain.Member.dto.*;
+import com.sonic.sonic_backend.domain.Member.dto.common.ReissueDto;
+import com.sonic.sonic_backend.domain.Member.dto.common.TokenDto;
+import com.sonic.sonic_backend.domain.Member.dto.general.GeneralSignInRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.general.MailSendRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.common.SignUpRequestDto;
+import com.sonic.sonic_backend.domain.Member.dto.social.KakaoUserInfoResponseDto;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
-import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.entity.RefreshToken;
-import com.sonic.sonic_backend.domain.Member.repository.AuthCodeRepository;
-import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
-import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
-import com.sonic.sonic_backend.domain.Member.repository.RefreshTokenRepository;
+import com.sonic.sonic_backend.domain.Member.repository.*;
 import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
@@ -43,6 +44,8 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailService emailService;
     private final AuthCodeRepository authCodeRepository;
+    private final KakaoService kakaoService;
+    private final MemberSocialRepository memberSocialRepository;
 
     @Transactional
     public void sendMail(MailSendRequestDto mailSendRequestDto) {
@@ -50,14 +53,14 @@ public class AuthService {
         emailService.joinEmail(email);
     }
 
-                         @Transactional
+    @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
         String email = signUpRequestDto.getEmail();
         //중복이메일검증
         checkIfDuplicated(email);
         //유효이메일검증
         checkValidEmail(signUpRequestDto.getEmail(), signUpRequestDto.getEmailCode());
-        saveMember(signUpRequestDto);
+        saveMember(signUpRequestDto, true);
     }
 
     @Transactional
@@ -72,6 +75,30 @@ public class AuthService {
         saveRefreshToken(tokenDto.getRefreshToken(), generalSignInRequestDto.getEmail());
         return tokenDto;
     }
+
+    @Transactional
+    public TokenDto signInKakao(String authCode) {
+        System.out.println("in kakao");
+        String accessToken = kakaoService.getAccessToken(authCode);
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUSerInfo(accessToken);
+        String emailButId = userInfo.getId().toString();
+        //신규회원 -> 회원가입 : socialId를 email로 사용
+        if(!memberRepository.existsByEmail(emailButId)) {
+            saveMember(getSignUpRequestDto(userInfo), false);
+        }
+        // createUserDetails에서 password를 provider로 설정함
+        // email : memberSocial의 socialId 사용
+        Authentication authentication = setAuthentication(emailButId, "KAKAO");
+        System.out.println("done setting authentication");
+        // 2. authentication 인자로 넘겨 토큰생성
+        TokenDto tokenDto = jwtProvider.generateToken(authentication);
+        System.out.println("done generating token");
+        // 3. refresh token 저장
+        saveRefreshToken(tokenDto.getRefreshToken(), emailButId);
+        return tokenDto;
+    }
+
+
 
     @Transactional
     public ReissueDto reissue(ReissueDto reIssueDto) {
@@ -120,18 +147,23 @@ public class AuthService {
 
 
     @Transactional
-    private void saveMember(SignUpRequestDto signUpRequestDto) {
+    private void saveMember(SignUpRequestDto signUpRequestDto, boolean isGeneral) {
         MemberProfile memberProfile = memberProfileRepository.save(signUpRequestDto.toMemberProfileEntity(signUpRequestDto));
         Attendance attendance = attendanceRepository.save(getEmptyAttendance());
         WeekAttendance weekAttendance = weekAttendanceRepository.save(getEmptyWeekAttendance());
         Member member = signUpRequestDto.toMemberEntity(signUpRequestDto.getEmail(),memberProfile,attendance,weekAttendance);
         memberRepository.save(member);
-        /*
-            일단 일반로그인의 회원가입만 구현,카카오로그인 구현과정에 카카오 회원가입로직 추가
-         */
-        memberGeneralRepository.save(signUpRequestDto.toMemberGeneralEntity(member,passwordEncoder.encode(signUpRequestDto.getPassword())));
+        //일반, 소셜로그인 분기
+        if(isGeneral) {
+            memberGeneralRepository.save(signUpRequestDto
+                    .toMemberGeneralEntity(member,passwordEncoder.encode(signUpRequestDto.getPassword())));
+        } else {
+            memberSocialRepository.save(signUpRequestDto
+                    .toMemberSocialEntity(member, Long.valueOf(signUpRequestDto.getEmail())));
+        }
     }
 
+    //로그인 시 리프레시 토큰 저장
     private void saveRefreshToken(String tokenValue, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFound::new);
@@ -139,6 +171,7 @@ public class AuthService {
         System.out.println("refresh token done");
         refreshTokenRepository.save(refreshToken);
     }
+    //reissue 시 리프레시 토큰 저장
     private void saveRefreshToken(String tokenValue, Long id) {
         RefreshToken refreshToken = new RefreshToken(tokenValue,id);
         System.out.println("refresh token done");
@@ -149,7 +182,6 @@ public class AuthService {
         UsernamePasswordAuthenticationToken usernamePasswordAuth = new UsernamePasswordAuthenticationToken(email, password);
         System.out.println("done getting UsernamePasswordAuthenticationToken");
         //customUserDetails -> loadUserByUsername 호출 : 실제 검증 수행
-        System.out.println(authenticationManagerBuilder.getObject());
         System.out.println(usernamePasswordAuth.getName()+", "+usernamePasswordAuth.getCredentials());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuth);
         System.out.println("getting context");
@@ -169,6 +201,14 @@ public class AuthService {
         if(foundAuthCodeOptional.isEmpty()) throw new EmailNotValid();
         int foundAuthCode = foundAuthCodeOptional.get();
         if(foundAuthCode!=authCode) throw new EmailNotValid();
+    }
+
+    private SignUpRequestDto getSignUpRequestDto(KakaoUserInfoResponseDto userInfo) {
+        return SignUpRequestDto.builder()
+                .email(userInfo.getId().toString())
+                .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
+                .hand("right")
+                .build();
     }
 
     private WeekAttendance getEmptyWeekAttendance() {

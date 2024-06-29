@@ -1,8 +1,6 @@
 package com.sonic.sonic_backend.configuration.Auth;
 
-import com.sonic.sonic_backend.domain.Member.dto.TokenDto;
-import com.sonic.sonic_backend.domain.Member.entity.RefreshToken;
-import com.sonic.sonic_backend.domain.Member.entity.Role;
+import com.sonic.sonic_backend.domain.Member.dto.common.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -19,7 +17,6 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

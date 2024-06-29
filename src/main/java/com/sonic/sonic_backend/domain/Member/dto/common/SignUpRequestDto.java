@@ -1,7 +1,8 @@
-package com.sonic.sonic_backend.domain.Member.dto;
+package com.sonic.sonic_backend.domain.Member.dto.common;
 
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
+import com.sonic.sonic_backend.domain.Member.entity.MemberSocial;
 import com.sonic.sonic_backend.domain.Member.entity.Role;
 import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
@@ -37,6 +38,13 @@ public class SignUpRequestDto {
         return MemberGeneral.builder()
                 .member(member)
                 .password(password)
+                .build();
+    }
+    public MemberSocial toMemberSocialEntity(Member member, Long socialId) {
+        return MemberSocial.builder()
+                .socialId(socialId)
+                .member(member)
+                .provider("KAKAO")
                 .build();
     }
     public MemberProfile toMemberProfileEntity(SignUpRequestDto signUpRequestDto) {

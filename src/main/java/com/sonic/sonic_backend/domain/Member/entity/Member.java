@@ -23,6 +23,7 @@ public class Member extends BaseEntity {
     @Column(name="member_id")
     private Long id;
 
+    //social 회원은 socialId를 저장
     @Column(nullable = false)
     private String email;
 

@@ -44,6 +44,7 @@ public class SecurityConfig  {
             ,"/v3/api-docs/**",
             "/auth/sign-up",
             "/auth/sign-in/general",
+            "/auth/sign-in/kakao",
             "/auth/email",
             "/auth/password",
             "/error",
