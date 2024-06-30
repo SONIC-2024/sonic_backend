@@ -5,4 +5,5 @@ public class Message {
     public static String SIGN_IN_SUCCESS = "로그인 성공했습니다.";
     public static String REISSUE_SUCCESS = "토큰 재발급 성공했습니다";
     public static String SEND_EMAIL_SUCCESS = "이메일전송 성공했습니다";
+    public static String GET_MEMBER_NAME_SUCCESS = " 사용자이름 불러오기 성공했습니다.";
 }
