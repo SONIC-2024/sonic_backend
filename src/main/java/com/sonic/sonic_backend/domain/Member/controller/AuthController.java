@@ -69,4 +69,13 @@ public class AuthController {
         return success(SEND_EMAIL_SUCCESS);
     }
 
+    @Operation(summary = "로그아웃")
+    @ResponseStatus(OK)
+    @PostMapping("/log-out")
+    public Response logOut(@RequestHeader("Authorization") String accessToken) {
+        authService.logOut(accessToken);
+        return success(LOG_OUT_SUCCESS);
+    }
+
+
 }

@@ -10,5 +10,6 @@ public class RefreshToken {
     @Id
     //Redis의 key : "필드이름(refreshToken):값(토큰값)" 향테
     private String refreshToken;
-    private Long memberId;
+    // blacklist와 호환성 위해 String으로 변경
+    private String memberId;
 }

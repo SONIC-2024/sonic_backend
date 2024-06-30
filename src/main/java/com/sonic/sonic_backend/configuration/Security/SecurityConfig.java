@@ -4,6 +4,7 @@ import com.sonic.sonic_backend.configuration.Auth.CustomAuthenticationProvider;
 import com.sonic.sonic_backend.configuration.Auth.CustomUserDetailsService;
 import com.sonic.sonic_backend.configuration.Auth.JwtAuthenticationFilter;
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
+import com.sonic.sonic_backend.domain.Member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig  {
 
     private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final CustomAuthenticationProvider customAuthenticationProvider;
 
     public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
@@ -64,7 +66,7 @@ public class SecurityConfig  {
                         authorizeRequests
                                 .requestMatchers(WHITE_LIST).permitAll()
                                 .anyRequest().authenticated())
-                                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

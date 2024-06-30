@@ -1,8 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.repository;
 
 import com.sonic.sonic_backend.domain.Member.entity.RefreshToken;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -20,31 +18,45 @@ public class RefreshTokenRepository {
         this.redisTemplate = redisTemplate;
     }
     //테스트용, 추후에 1주로 설정
-    private final int EXPIRE_TIME=60*2;
+    private final int EXPIRE_TIME=60*3;
+    private final int BLACK_LISt_EXPIRE_DAY = 7;
 
     // <key : token, value : memberId> 형태로 저장
     public void save(final RefreshToken refreshToken) {
-        System.out.println("start save");
-        System.out.println("$%$% "+redisTemplate.getConnectionFactory());
-        ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
-        System.out.println("done 1");
+        //reissue 시 find by token이 필요하므로 이중으로 저장
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getMemberId());
-        System.out.println("done 2");
         redisTemplate.expire(refreshToken.getRefreshToken(),EXPIRE_TIME, TimeUnit.SECONDS);
-        System.out.println("all done");
+        //로그아웃 시 find by id가 필요하므로 이중으로 저장
+        valueOperations.set(refreshToken.getMemberId(), refreshToken.getRefreshToken());
+        redisTemplate.expire(refreshToken.getMemberId(),EXPIRE_TIME, TimeUnit.SECONDS);
     }
 
-    public Optional<RefreshToken> findById(String refreshToken) {
-        ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
-        Long memberId = valueOperations.get(refreshToken);
+    public void saveBlackList(final String accessToken) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(accessToken, "blackList");
+        redisTemplate.expire(accessToken, BLACK_LISt_EXPIRE_DAY, TimeUnit.DAYS);
+    }
+
+    public Optional<RefreshToken> findByToken(String refreshToken) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String memberId = valueOperations.get(refreshToken);
         if(Objects.isNull(memberId)) return Optional.empty();
         return Optional.of(new RefreshToken(refreshToken, memberId));
     }
+    public Optional<RefreshToken> findById(String id) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String refreshToken = valueOperations.get(id);
+        if(Objects.isNull(refreshToken)) return Optional.empty();
+        return Optional.of(new RefreshToken(refreshToken, id));
+    }
 
     public void delete(String refreshToken) {
-        ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
-        valueOperations.getAndDelete(refreshToken);
-
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        //key:token 삭제
+        String id = valueOperations.getAndDelete(refreshToken);
+        //key:id 삭제
+        valueOperations.getAndDelete(id);
     }
 
 }

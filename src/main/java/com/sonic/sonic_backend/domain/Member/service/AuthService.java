@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
+import com.sonic.sonic_backend.configuration.Auth.JwtAuthenticationFilter;
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
 import com.sonic.sonic_backend.domain.Member.dto.common.ReissueDto;
 import com.sonic.sonic_backend.domain.Member.dto.common.TokenDto;
@@ -17,6 +18,7 @@ import com.sonic.sonic_backend.domain.Profile.repository.AttendanceRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
 import com.sonic.sonic_backend.exception.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -46,6 +49,8 @@ public class AuthService {
     private final AuthCodeRepository authCodeRepository;
     private final KakaoService kakaoService;
     private final MemberSocialRepository memberSocialRepository;
+    private final MemberService memberService;
+
 
     @Transactional
     public void sendMail(MailSendRequestDto mailSendRequestDto) {
@@ -102,7 +107,7 @@ public class AuthService {
 
     @Transactional
     public ReissueDto reissue(ReissueDto reIssueDto) {
-        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findById(reIssueDto.getRefreshToken());
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(reIssueDto.getRefreshToken());
         //1. 리프레시토큰 검증
         RefreshToken refreshToken = validateRefreshToken(reIssueDto, refreshTokenOptional);
         //2. 토큰 재발급
@@ -110,7 +115,7 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.generateToken(authentication);
         //3. 기존 리프레시토큰 삭제, 새 리프레시토큰 redis에 저장
         refreshTokenRepository.delete(refreshToken.getRefreshToken());
-        saveRefreshToken(tokenDto.getRefreshToken(), refreshToken.getMemberId());
+        saveRefreshTokenReissue(tokenDto.getRefreshToken(), refreshToken.getMemberId());
         return ReissueDto.builder()
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
@@ -118,11 +123,23 @@ public class AuthService {
     }
 
     @Transactional
+    public void logOut(String header) {
+        String accessToken = resolveToken(header).orElseThrow(()->new RuntimeException("토큰이 비어있습니다."));
+        Member member = memberService.getCurrentMember();
+        //액세스토큰 블랙리스트 등록
+        refreshTokenRepository.saveBlackList(accessToken);
+        //기존 리프레시토큰 삭제
+        RefreshToken refreshToken = refreshTokenRepository.findById(member.getId().toString())
+                .orElseThrow(()-> new RuntimeException("이미 삭제된 토큰입니다"));
+        refreshTokenRepository.delete(refreshToken.getRefreshToken());
+    }
+
+    @Transactional
     public void findPassword(MailSendRequestDto mailSendRequestDto) {
         // 가입된 이메일 존재하는지 확인
         String email = mailSendRequestDto.getEmail();
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()->new MemberNotFound());
+                .orElseThrow(MemberNotFound::new);
         // 메일보내기
         String newPassword = generateRandomString();
         emailService.joinEmail(email, newPassword);
@@ -167,12 +184,12 @@ public class AuthService {
     private void saveRefreshToken(String tokenValue, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFound::new);
-        RefreshToken refreshToken = new RefreshToken(tokenValue, member.getId());
+        RefreshToken refreshToken = new RefreshToken(tokenValue, member.getId().toString());
         System.out.println("refresh token done");
         refreshTokenRepository.save(refreshToken);
     }
     //reissue 시 리프레시 토큰 저장
-    private void saveRefreshToken(String tokenValue, Long id) {
+    private void saveRefreshTokenReissue(String tokenValue, String id) {
         RefreshToken refreshToken = new RefreshToken(tokenValue,id);
         System.out.println("refresh token done");
         refreshTokenRepository.save(refreshToken);
@@ -221,5 +238,12 @@ public class AuthService {
                 .last_date(null)
                 .continuous_attendance(0).max_continuous_attendance(0)
                 .build();
+    }
+
+    private Optional<String> resolveToken(String header) {
+        if (StringUtils.hasText(header) && header.startsWith("Bearer")) {
+            return Optional.of(header.substring(7));
+        }
+        return Optional.empty();
     }
 }

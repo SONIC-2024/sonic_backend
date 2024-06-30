@@ -35,7 +35,7 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         System.out.println("done settin connection");
         redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
-        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));  // value
+        redisTemplate.setValueSerializer(new StringRedisSerializer());  // value : blackList와의 호환성을 위해 String으로 변경
         System.out.println(redisTemplate.getConnectionFactory());
         return redisTemplate;
     }
@@ -51,5 +51,7 @@ public class RedisConfig {
         System.out.println(redisTemplate.getConnectionFactory());
         return redisTemplate;
     }
+
+
 
 }

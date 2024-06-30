@@ -34,4 +34,10 @@ public class Advice {
     public Response WrongEmailAddressResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "이메일 전송에 실패했습니다. 이메일주소를 확인해주세요.");
     }
+
+    @ExceptionHandler(LogOutToken.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response LogOutTokenResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "로그아웃된 유효하지 않은 토큰입니다.");
+    }
 }
