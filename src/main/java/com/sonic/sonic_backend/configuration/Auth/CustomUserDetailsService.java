@@ -6,6 +6,7 @@ import com.sonic.sonic_backend.domain.Member.entity.MemberSocial;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberSocialRepository;
+import com.sonic.sonic_backend.exception.LogInNotMatch;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,10 +32,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("in loadUserByUsername");
         Member member =  memberRepository.findByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다"));
+                .orElseThrow(LogInNotMatch::new);
 
         //소셜 or 일반 로그인 구별
-        if(!email.substring(email.length()-4, email.length()).equals(".com")) {
+        if(!email.contains("@")) {
             return createUserDetails(memberSocialRepository.findByMember(member), member);
         }
         return createUserDetails(memberGeneralRepository.findByMember(member), member);

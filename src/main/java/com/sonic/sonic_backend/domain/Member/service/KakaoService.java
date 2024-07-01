@@ -19,7 +19,7 @@ public class KakaoService {
     @Value("${kakao.client.id}") private String clientId;
 
 
-    //인증코드 -> 액세스토큰 얻기
+    //1. 인증코드 -> 액세스토큰 얻기
     public String getAccessToken(String authCode) {
         System.out.println("in getAccessToken");
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAKAO_OAUTH_URL).post()

@@ -1,9 +1,6 @@
 package com.sonic.sonic_backend.configuration.Security;
 
-import com.sonic.sonic_backend.configuration.Auth.CustomAuthenticationProvider;
-import com.sonic.sonic_backend.configuration.Auth.CustomUserDetailsService;
-import com.sonic.sonic_backend.configuration.Auth.JwtAuthenticationFilter;
-import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
+import com.sonic.sonic_backend.configuration.Auth.*;
 import com.sonic.sonic_backend.domain.Member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,8 @@ public class SecurityConfig  {
                         authorizeRequests
                                 .requestMatchers(WHITE_LIST).permitAll()
                                 .anyRequest().authenticated())
+                                .exceptionHandling((exception) ->
+                                        exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
                                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

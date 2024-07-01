@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.configuration.Auth;
 
+import com.sonic.sonic_backend.exception.LogInNotMatch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,8 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // password 일치하지 않으면!
         if(!passwordEncoder.matches(password,userDetails.getPassword())){
-            System.out.println("password not matches");
-            throw new BadCredentialsException("BadCredentialsException");
+            throw new LogInNotMatch();
         }
         System.out.println(userDetails.getAuthorities());
 

@@ -60,6 +60,9 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        return true;
+        /*
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -73,6 +76,7 @@ public class JwtProvider {
             System.out.println("JWT claims string is empty."+e);
         }
         return false;
+         */
     }
 
     public Authentication getAuthentication(String token) {
@@ -93,12 +97,13 @@ public class JwtProvider {
     }
 
     private Claims parseClaims(String accessToken) {
+        //reissue 하는 경우에 토큰 관련 exception은 여기서 걸림
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        } catch (MalformedJwtException e) {
+            throw new MalformedJwtException("잘못된 형식의 토큰입니다");
         }
     }
-
-
 }

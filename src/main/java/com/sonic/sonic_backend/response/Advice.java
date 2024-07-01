@@ -1,6 +1,7 @@
 package com.sonic.sonic_backend.response;
 
 import com.sonic.sonic_backend.exception.*;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,5 +40,18 @@ public class Advice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response LogOutTokenResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "로그아웃된 유효하지 않은 토큰입니다.");
+    }
+
+    @ExceptionHandler(LogInNotMatch.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response LogInNotMatchResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "이메일과 비밀번호를 다시 확인해주세요.");
+    }
+
+    //filter 거친 후 controller 단에서 발생한 MalformedJwtException : reissue 시 발생
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response MalformedTokenResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "잘못된 형식의 토큰입니다");
     }
 }
