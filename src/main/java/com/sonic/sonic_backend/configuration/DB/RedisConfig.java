@@ -34,6 +34,7 @@ public class RedisConfig {
         System.out.println("$%$%"+redisTemplate);
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         System.out.println("done settin connection");
+        redisTemplate.setEnableTransactionSupport(true);
         redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
         redisTemplate.setValueSerializer(new StringRedisSerializer());  // value : blackList와의 호환성을 위해 String으로 변경
         System.out.println(redisTemplate.getConnectionFactory());
@@ -46,12 +47,10 @@ public class RedisConfig {
         System.out.println("$%$%"+redisTemplate);
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         System.out.println("done settin connection");
+        redisTemplate.setEnableTransactionSupport(true);
         redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
         redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));  // value
         System.out.println(redisTemplate.getConnectionFactory());
         return redisTemplate;
     }
-
-
-
 }

@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="member_profile_id")
     private MemberProfile memberProfile;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="week_attendance_id")
     private WeekAttendance weekAttendance;
 

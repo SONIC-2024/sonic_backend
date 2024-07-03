@@ -51,6 +51,8 @@ public class SignUpRequestDto {
         return MemberProfile.builder()
                 .tier(Tier.BRONZE_III)
                 .nickname(signUpRequestDto.getNickname())
+                //TODO : 기본프로필 이미지 업로드 후 url 넣기
+                //.profileImgUrl()
                 .exp(0)
                 .hand(signUpRequestDto.getHand())
                 .build();

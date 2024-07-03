@@ -28,7 +28,8 @@ public class MemberProfile extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Tier tier;
 
-    //기본이미지 s3에 업로드 하고 default로 넣어주기
     @Column(name="profile_img_url")
     private String profileImgUrl;
+
+    public void addExp(int exp) {this.exp+=exp;}
 }

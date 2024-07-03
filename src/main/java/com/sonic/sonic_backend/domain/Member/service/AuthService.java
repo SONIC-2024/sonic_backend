@@ -16,9 +16,9 @@ import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Profile.repository.AttendanceRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
+import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
 import com.sonic.sonic_backend.exception.*;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,6 +50,7 @@ public class AuthService {
     private final KakaoService kakaoService;
     private final MemberSocialRepository memberSocialRepository;
     private final MemberService memberService;
+    private final RankingRepository rankingRepository;
 
 
     @Transactional
@@ -178,6 +179,9 @@ public class AuthService {
             memberSocialRepository.save(signUpRequestDto
                     .toMemberSocialEntity(member, Long.valueOf(signUpRequestDto.getEmail())));
         }
+        rankingRepository.addOrUpdate(
+                memberRepository.findByEmail(member.getEmail()).orElseThrow(MemberNotFound::new).getId().toString()
+                , 0);
     }
 
     //로그인 시 리프레시 토큰 저장
