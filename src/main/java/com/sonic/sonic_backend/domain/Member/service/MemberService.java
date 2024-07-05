@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
+import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.dto.member.GetMemberNameResponseDto;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
@@ -16,6 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
     private final WeekAttendanceRepository weekAttendanceRepository;
     private final AttendanceRepository attendanceRepository;
+    private final S3Service s3Service;
 
     public Member getCurrentMember() {
         return memberRepository.findByEmail(
@@ -62,5 +67,16 @@ public class MemberService {
         Member member = getCurrentMember();
         member.getMemberProfile().addExp(exp);
         return member.getMemberProfile().getExp();
+    }
+
+    @Transactional
+    public void updateProfileImg(MultipartFile file) throws IOException {
+        Member member = getCurrentMember();
+        MemberProfile memberProfile = member.getMemberProfile();
+        String key = s3Service.saveProfileFile(file);
+
+        String previousProfile = memberProfile.getProfileImgUrl();
+        memberProfile.updateProfileImgUrl(key);
+        if(!previousProfile.equals("profile.jpg")) s3Service.delete(key);
     }
 }

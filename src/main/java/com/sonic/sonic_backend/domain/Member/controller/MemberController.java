@@ -9,8 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static com.sonic.sonic_backend.response.Message.*;
 import static com.sonic.sonic_backend.response.Response.success;
@@ -65,6 +69,15 @@ public class MemberController {
 
 
  */
+    @Operation(summary = "프로필사진 변경")
+    @ResponseStatus(OK)
+    @PatchMapping(value="/profile-img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Response updateProfileImg(@RequestParam("file")MultipartFile file) throws IOException {
+        memberService.updateProfileImg(file);
+        return success(UPDATE_PROFILE_IMG_SUCCESS);
+    }
+
+
     @Operation(summary = "테스트용")
     @ResponseStatus(OK)
     @PatchMapping("/exp")

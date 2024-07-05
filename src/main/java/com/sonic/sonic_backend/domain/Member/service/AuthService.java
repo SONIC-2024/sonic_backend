@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
+import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.configuration.Auth.JwtAuthenticationFilter;
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
 import com.sonic.sonic_backend.domain.Member.dto.common.ReissueDto;
@@ -51,6 +52,7 @@ public class AuthService {
     private final MemberSocialRepository memberSocialRepository;
     private final MemberService memberService;
     private final RankingRepository rankingRepository;
+    private final S3Service s3Service;
 
 
     @Transactional
@@ -166,7 +168,8 @@ public class AuthService {
 
     @Transactional
     private void saveMember(SignUpRequestDto signUpRequestDto, boolean isGeneral) {
-        MemberProfile memberProfile = memberProfileRepository.save(signUpRequestDto.toMemberProfileEntity(signUpRequestDto));
+        MemberProfile memberProfile = memberProfileRepository.save(
+                signUpRequestDto.toMemberProfileEntity(signUpRequestDto, s3Service.getFullUrl("profile.jpg")));
         Attendance attendance = attendanceRepository.save(getEmptyAttendance());
         WeekAttendance weekAttendance = weekAttendanceRepository.save(getEmptyWeekAttendance());
         Member member = signUpRequestDto.toMemberEntity(signUpRequestDto.getEmail(),memberProfile,attendance,weekAttendance);

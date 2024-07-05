@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.dto.common;
 
+import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.entity.MemberSocial;
@@ -8,10 +9,7 @@ import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Tier;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,12 +45,11 @@ public class SignUpRequestDto {
                 .provider("KAKAO")
                 .build();
     }
-    public MemberProfile toMemberProfileEntity(SignUpRequestDto signUpRequestDto) {
+    public MemberProfile toMemberProfileEntity(SignUpRequestDto signUpRequestDto,String basicProfileUrl) {
         return MemberProfile.builder()
                 .tier(Tier.BRONZE_III)
                 .nickname(signUpRequestDto.getNickname())
-                //TODO : 기본프로필 이미지 업로드 후 url 넣기
-                //.profileImgUrl()
+                .profileImgUrl(basicProfileUrl)
                 .exp(0)
                 .hand(signUpRequestDto.getHand())
                 .build();

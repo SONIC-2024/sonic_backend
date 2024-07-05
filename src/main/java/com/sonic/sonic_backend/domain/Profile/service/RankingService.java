@@ -1,5 +1,6 @@
 package com.sonic.sonic_backend.domain.Profile.service;
 
+import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.service.MemberService;
@@ -23,6 +24,7 @@ public class RankingService {
     private final RankingRepository rankingRepository;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public List<RankingResponseDto> getRanking() {
@@ -55,8 +57,10 @@ public class RankingService {
         for(RankingResponseDto dto : rankingResponseDtos) {
             Member foundMember = memberRepository.findById(dto.getId()).orElseThrow(MemberNotFound::new);
             //TODO : tier 이미지 업로드 후 url로 수정
-            dto.updateDto(foundMember.getMemberProfile().getTier().name,
-                    foundMember.getMemberProfile().getProfileImgUrl(),
+            dto.updateDto(
+                    //s3Service.getFullUrl(foundMember.getMemberProfile().getTier().url)으로 수정
+                    foundMember.getMemberProfile().getTier().name,
+                    s3Service.getFullUrl(foundMember.getMemberProfile().getProfileImgUrl()),
                     foundMember.getAttendance().getContinuous_attendance(),
                     foundMember.getMemberProfile().getNickname());
         }
