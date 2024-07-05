@@ -22,14 +22,14 @@ public class RankingRepository {
         zSetOperations.add(KEY, memberId, exp);
     }
 
-    @Transactional
+
     public int getMyRanking(Member member) {
         //1. 요청 회원의 순위 얻기
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         String memberId = member.getId().toString();
         return zSetOperations.reverseRank(KEY, memberId).intValue();
     }
-    @Transactional
+
     public List<RankingResponseDto> getRankingList(int myRanking) {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 
