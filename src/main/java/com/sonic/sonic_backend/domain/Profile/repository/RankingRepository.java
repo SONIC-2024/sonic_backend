@@ -35,7 +35,7 @@ public class RankingRepository {
 
         //2. 요청 회원의 -2, +2 순위 회원들의 id, score 얻기
         //ranking - range 차이 -> +-1 조정
-        int min = myRanking-2-1; int max = myRanking+2-1;
+        int min = myRanking-2; int max = myRanking+2;
         if(min<0) min=0; //음수 되지 않도록 조정, 최댓값 범위 넘어가는건 상관없음
         Set<ZSetOperations.TypedTuple<String>> rankingList = zSetOperations
                 //내림차순 순위 : exp

@@ -26,7 +26,7 @@ public class RankingService {
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
-    @Transactional
+    //@Transactional
     public List<RankingResponseDto> getRanking() {
         Member member = memberService.getCurrentMember();
         //1. 요청한 회원의 순위 구하기
