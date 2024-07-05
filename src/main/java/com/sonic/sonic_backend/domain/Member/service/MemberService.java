@@ -62,21 +62,5 @@ public class MemberService {
         }
     }
 
-    @Transactional
-    public int updateExp(int exp) {
-        Member member = getCurrentMember();
-        member.getMemberProfile().addExp(exp);
-        return member.getMemberProfile().getExp();
-    }
 
-    @Transactional
-    public void updateProfileImg(MultipartFile file) throws IOException {
-        Member member = getCurrentMember();
-        MemberProfile memberProfile = member.getMemberProfile();
-        String key = s3Service.saveProfileFile(file);
-
-        String previousProfile = memberProfile.getProfileImgUrl();
-        memberProfile.updateProfileImgUrl(key);
-        if(!previousProfile.equals("profile.jpg")) s3Service.delete(key);
-    }
 }

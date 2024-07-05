@@ -1,7 +1,6 @@
 package com.sonic.sonic_backend.domain.Member.service;
 
 import com.sonic.sonic_backend.configuration.AWS.S3Service;
-import com.sonic.sonic_backend.configuration.Auth.JwtAuthenticationFilter;
 import com.sonic.sonic_backend.configuration.Auth.JwtProvider;
 import com.sonic.sonic_backend.domain.Member.dto.common.ReissueDto;
 import com.sonic.sonic_backend.domain.Member.dto.common.TokenDto;
@@ -147,7 +146,7 @@ public class AuthService {
         String newPassword = generateRandomString();
         emailService.joinEmail(email, newPassword);
         // 바뀐 패스워드 저장
-        memberGeneralRepository.findByMember(member).changePassword(passwordEncoder.encode(newPassword));
+        memberGeneralRepository.findByMember(member).updatePassword(passwordEncoder.encode(newPassword));
     }
 
     public String generateRandomString() {

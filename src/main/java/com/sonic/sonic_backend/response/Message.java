@@ -10,4 +10,5 @@ public class Message {
     public static String DELETE_MEMBER_SUCCESS = "회원탈퇴 성공했습니다";
     public static String GET_RANKING_SUCCESS = "랭킹확인하기 성공했습니다";
     public static String UPDATE_PROFILE_IMG_SUCCESS="프로필사진 설정하기 성공했습니다";
+    public static String UPDATE_HAND_SUCCESS="손 방향 변경하기 성공했습니다.";
 }

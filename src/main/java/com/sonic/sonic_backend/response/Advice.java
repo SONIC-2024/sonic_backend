@@ -54,4 +54,10 @@ public class Advice {
     public Response MalformedTokenResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "잘못된 형식의 토큰입니다");
     }
+
+    @ExceptionHandler(SocialMemberUpdatePassword.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response SocialMemberUpdatePasswordResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "소셜로그인 회원은 비밀번호를 변경할 수 없습니다.");
+    }
 }

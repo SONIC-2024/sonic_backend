@@ -33,4 +33,6 @@ public class MemberProfile extends BaseEntity {
 
     public void addExp(int exp) {this.exp+=exp;}
     public void updateProfileImgUrl(String url) {this.profileImgUrl = url;}
+    public void updateHand(String hand) {this.hand = hand;}
+    public void updateNickname(String nickname) {this.nickname = nickname;}
 }
