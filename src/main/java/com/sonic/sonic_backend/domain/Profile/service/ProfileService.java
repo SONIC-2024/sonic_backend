@@ -6,7 +6,9 @@ import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.service.MemberService;
+import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
+import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
 import com.sonic.sonic_backend.exception.SocialMemberUpdatePassword;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,9 @@ public class ProfileService {
     private final MemberService memberService;
     private final S3Service s3Service;
     private final PasswordEncoder passwordEncoder;
+
+
+
 
     @Transactional
     public int updateExp(int exp) {
@@ -62,4 +68,5 @@ public class ProfileService {
         Member member = memberService.getCurrentMember();
         return member.getMemberProfile();
     }
+
 }

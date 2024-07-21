@@ -7,7 +7,9 @@ import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberSocialRepository;
+import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
+import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Profile.repository.AttendanceRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +62,43 @@ public class MemberService {
             memberGeneralRepository.delete(memberGeneralRepository.findByMember(member));
         } else {
             memberSocialRepository.delete(memberSocialRepository.findByMember(member));
+        }
+    }
+
+    @Transactional
+    public void updateAttendance() {
+        Member member = getCurrentMember();
+        Attendance attendance = member.getAttendance(); WeekAttendance weekAttendance = member.getWeekAttendance();
+        LocalDate now = LocalDate.now();
+
+        updateContinuousAttendance(attendance, now);
+        updateWeekAttendance(weekAttendance, now);
+        attendance.updateLastDate(now);
+    }
+
+    private void updateWeekAttendance(WeekAttendance weekAttendance, LocalDate now) {
+        switch (now.getDayOfWeek().getValue()) {
+            case 1 -> weekAttendance.updateOnMon();
+            case 2 -> weekAttendance.updateOnTue();
+            case 3 -> weekAttendance.updateOnWed();
+            case 4 -> weekAttendance.updateOnThu();
+            case 5 -> weekAttendance.updateOnFri();
+            case 6 -> weekAttendance.updateOnSat();
+            case 7 -> weekAttendance.updateOnSun();
+        }
+    }
+
+    private void updateContinuousAttendance(Attendance attendance, LocalDate now) {
+        LocalDate lastAttendance = attendance.getLast_date();
+        //연속 출석일수 갱신
+        if(lastAttendance.plusDays(1).isEqual(now)) {
+            attendance.plusContinuousAttendance();
+            //최대 연속 출석일수 갱신
+            if(attendance.getMax_continuous_attendance() < attendance.getContinuous_attendance()) {
+                attendance.plusMaxContinuousAttendance();
+            }
+        } else if(!lastAttendance.isEqual(LocalDate.now())) {
+            attendance.initContinuousAttendance();
         }
     }
 

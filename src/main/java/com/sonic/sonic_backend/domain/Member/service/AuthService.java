@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -80,21 +81,21 @@ public class AuthService {
         System.out.println("done generating token");
         // 3. refresh token 저장
         saveRefreshToken(tokenDto.getRefreshToken(), generalSignInRequestDto.getEmail());
+        // 4. attendance 갱신
+        memberService.updateAttendance();
         return tokenDto;
     }
 
     @Transactional
     public TokenDto signInKakao(String authCode) {
-        System.out.println("in kakao");
-        String accessToken = kakaoService.getAccessToken(authCode);
-        KakaoUserInfoResponseDto userInfo = kakaoService.getUSerInfo(accessToken);
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUSerInfo(kakaoService.getAccessToken(authCode));
         String emailButId = userInfo.getId().toString();
+
         //신규회원 -> 회원가입 : socialId를 email로 사용
-        if(!memberRepository.existsByEmail(emailButId)) {
-            saveMember(getSignUpRequestDto(userInfo), false);
-        }
-        // createUserDetails에서 password를 provider로 설정함
-        // email : memberSocial의 socialId 사용
+        if(!memberRepository.existsByEmail(emailButId)) saveMember(getSignUpRequestDto(userInfo), false);
+
+        /* createUserDetails에서 password를 provider로 설정함
+        email : memberSocial의 socialId 사용 */
         Authentication authentication = setAuthentication(emailButId, "KAKAO");
         System.out.println("done setting authentication");
         // 2. authentication 인자로 넘겨 토큰생성
@@ -102,9 +103,10 @@ public class AuthService {
         System.out.println("done generating token");
         // 3. refresh token 저장
         saveRefreshToken(tokenDto.getRefreshToken(), emailButId);
+        // 4. attendance 갱신
+        memberService.updateAttendance();
         return tokenDto;
     }
-
 
 
     @Transactional
@@ -169,7 +171,7 @@ public class AuthService {
     private void saveMember(SignUpRequestDto signUpRequestDto, boolean isGeneral) {
         MemberProfile memberProfile = memberProfileRepository.save(
                 signUpRequestDto.toMemberProfileEntity(signUpRequestDto, s3Service.getFullUrl("profile.jpg")));
-        Attendance attendance = attendanceRepository.save(getEmptyAttendance());
+        Attendance attendance = attendanceRepository.save(getInitialAttendance());
         WeekAttendance weekAttendance = weekAttendanceRepository.save(getEmptyWeekAttendance());
         Member member = signUpRequestDto.toMemberEntity(signUpRequestDto.getEmail(),memberProfile,attendance,weekAttendance);
         memberRepository.save(member);
@@ -239,9 +241,9 @@ public class AuthService {
                 .MON(false).TUE(false).WED(false).THU(false).FRI(false).SAT(false).SUN(false).build();
     }
 
-    private Attendance getEmptyAttendance() {
+    private Attendance getInitialAttendance() {
         return Attendance.builder()
-                .last_date(null)
+                .last_date(LocalDate.now())
                 .continuous_attendance(0).max_continuous_attendance(0)
                 .build();
     }
