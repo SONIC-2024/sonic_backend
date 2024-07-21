@@ -37,6 +37,14 @@ public class MemberController {
     public Response getMember() {
         return success(GET_MEMBER_NAME_SUCCESS, memberService.getMemberName());
     }
+
+    @Operation(summary = "회원 프로필 불러오기")
+    @ResponseStatus(OK)
+    @GetMapping("/profile")
+    public Response getMemberProfile() {
+        return success(GET_MEMBER_PROFILE_SUCCESS, memberService.getMemberProfile());
+    }
+
     @Operation(summary = "회원 탈퇴하기")
     @ResponseStatus(OK)
     @DeleteMapping

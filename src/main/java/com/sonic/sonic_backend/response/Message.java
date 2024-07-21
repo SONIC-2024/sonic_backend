@@ -12,4 +12,5 @@ public class Message {
     public static String UPDATE_PROFILE_IMG_SUCCESS="프로필사진 설정하기 성공했습니다.";
     public static String UPDATE_HAND_SUCCESS="손 방향 변경하기 성공했습니다.";
     public static String GET_ATTENDANCE_SUCCESS = "출석일수 불러오기 성공했습니다.";
+    public static String GET_MEMBER_PROFILE_SUCCESS = "프로필정보 불러오기 성공했습니다.";
 }

@@ -35,7 +35,7 @@ public class ProfileService {
         WeekAttendance weekAttendance = member.getWeekAttendance();
         Attendance attendance = member.getAttendance();
 
-        return new AttendanceResponseDto().toDto(getWeekList(weekAttendance), attendance.getContinuous_attendance());
+        return AttendanceResponseDto.toDto(getWeekList(weekAttendance), attendance.getContinuous_attendance());
     }
 
     public boolean[] getWeekList(WeekAttendance weekAttendance) {

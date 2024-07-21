@@ -2,6 +2,7 @@ package com.sonic.sonic_backend.domain.Member.service;
 
 import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.dto.member.GetMemberNameResponseDto;
+import com.sonic.sonic_backend.domain.Member.dto.member.MemberProfileResponseDto;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
@@ -45,6 +46,13 @@ public class MemberService {
     public GetMemberNameResponseDto getMemberName() {
         MemberProfile memberProfile = getCurrentMember().getMemberProfile();
         return GetMemberNameResponseDto.builder().name(memberProfile.getNickname()).build();
+    }
+    public MemberProfileResponseDto getMemberProfile() {
+        MemberProfile memberProfile = getCurrentMember().getMemberProfile();
+        return MemberProfileResponseDto.builder()
+                .nickname(memberProfile.getNickname())
+                .profileImg(s3Service.getFullUrl(memberProfile.getProfileImgUrl()))
+                .build();
     }
 
     @Transactional
