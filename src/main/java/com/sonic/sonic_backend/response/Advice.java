@@ -60,4 +60,9 @@ public class Advice {
     public Response SocialMemberUpdatePasswordResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "소셜로그인 회원은 비밀번호를 변경할 수 없습니다.");
     }
+    @ExceptionHandler(QuizNotFound.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response QuizNotFoundResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "퀴즈를 찾을 수 없습니다.");
+    }
 }

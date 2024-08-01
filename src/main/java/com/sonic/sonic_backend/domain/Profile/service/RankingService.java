@@ -31,11 +31,15 @@ public class RankingService {
         Member member = memberService.getCurrentMember();
         //1. 요청한 회원의 순위 구하기
         int myRanking = rankingRepository.getMyRanking(member);
-
         //2. 요청 회원의 -2, +2 순위 회원들의 id, score, ranking 얻기
         List<RankingResponseDto> rankingResponseDtos = rankingRepository.getRankingList(myRanking);
-
         //3. 동점자 순위 처리
+        getCompleteRanking(rankingResponseDtos);
+
+        //4. dto의 나머지 부분들 채우기 : attendance, profile, tier img url
+        return getCompleteDto(rankingResponseDtos);
+    }
+    public void getCompleteRanking(List<RankingResponseDto> rankingResponseDtos) {
         Long exScore = rankingResponseDtos.get(0).getExp();
         Long score;
         for (int i = 0; i < rankingResponseDtos.size(); i++) {
@@ -48,18 +52,13 @@ public class RankingService {
             }
             exScore = score;
         }
-
-        //4. dto의 나머지 부분들 채우기 : attendance, profile, tier img url
-        return getCompleteDto(rankingResponseDtos);
     }
 
     private List<RankingResponseDto> getCompleteDto(List<RankingResponseDto> rankingResponseDtos) {
         for(RankingResponseDto dto : rankingResponseDtos) {
             Member foundMember = memberRepository.findById(dto.getId()).orElseThrow(MemberNotFound::new);
-            //TODO : tier 이미지 업로드 후 url로 수정
             dto.updateDto(
-                    //s3Service.getFullUrl(foundMember.getMemberProfile().getTier().url)으로 수정
-                    foundMember.getMemberProfile().getTier().name,
+                    s3Service.getFullUrl(foundMember.getMemberProfile().getTier().url),
                     s3Service.getFullUrl(foundMember.getMemberProfile().getProfileImgUrl()),
                     foundMember.getAttendance().getContinuous_attendance(),
                     foundMember.getMemberProfile().getNickname());

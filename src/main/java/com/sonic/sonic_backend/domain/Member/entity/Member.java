@@ -4,12 +4,17 @@ import com.sonic.sonic_backend.domain.BaseEntity;
 import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
+import com.sonic.sonic_backend.domain.Quiz.entity.SolvedQuiz;
+import com.sonic.sonic_backend.domain.Quiz.entity.StarredQuiz;
+import com.sonic.sonic_backend.domain.Word.entity.StarredWord;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,5 +46,18 @@ public class Member extends BaseEntity {
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="week_attendance_id")
     private WeekAttendance weekAttendance;
+
+    //@Builder.default 의미 알아보기
+    //@cascadeType 의미 알아보기
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<SolvedQuiz> solvedQuiz = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StarredQuiz> starredQuiz = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StarredWord> starredWord = new ArrayList<>();
 
 }

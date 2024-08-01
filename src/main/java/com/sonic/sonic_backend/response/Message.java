@@ -13,4 +13,10 @@ public class Message {
     public static String UPDATE_HAND_SUCCESS="손 방향 변경하기 성공했습니다.";
     public static String GET_ATTENDANCE_SUCCESS = "출석일수 불러오기 성공했습니다.";
     public static String GET_MEMBER_PROFILE_SUCCESS = "프로필정보 불러오기 성공했습니다.";
+    public static String GET_TIER_SUCCESS = "티어정보 불러오기 성공했습니다";
+    public static String GET_QUIZ_1_SUCCESS = "퀴즈 레벨1 불러오기 성공했습니다";
+    public static String GET_QUIZ_2_SUCCESS = "퀴즈 레벨2 불러오기 성공했습니다";
+    public static String GET_QUIZ_3_SUCCESS = "퀴즈 레벨3 불러오기 성공했습니다";
+    public static String SOLVE_QUIZ_SUCCESS = "퀴즈 정답처리 성공했습니다.";
+    public static String STAR_QUIZ_SUCCESS = "즐겨찾기 등록, 취소하기 성공했습니다";
 }

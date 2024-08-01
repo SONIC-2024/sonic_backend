@@ -4,7 +4,6 @@ import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.dto.member.GetMemberNameResponseDto;
 import com.sonic.sonic_backend.domain.Member.dto.member.MemberProfileResponseDto;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
-import com.sonic.sonic_backend.domain.Member.entity.MemberGeneral;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberSocialRepository;
@@ -13,16 +12,14 @@ import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Profile.repository.AttendanceRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
+import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
 import com.sonic.sonic_backend.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 @Service
@@ -35,6 +32,7 @@ public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
     private final WeekAttendanceRepository weekAttendanceRepository;
     private final AttendanceRepository attendanceRepository;
+    private final RankingRepository rankingRepository;
     private final S3Service s3Service;
 
     public Member getCurrentMember() {
@@ -79,7 +77,7 @@ public class MemberService {
         Attendance attendance = member.getAttendance(); WeekAttendance weekAttendance = member.getWeekAttendance();
         LocalDate now = LocalDate.now();
 
-        updateContinuousAttendance(attendance, now);
+        updateContinuousAttendanceAndScore(member, now);
         updateWeekAttendance(weekAttendance, now);
         attendance.updateLastDate(now);
     }
@@ -96,11 +94,32 @@ public class MemberService {
         }
     }
 
-    private void updateContinuousAttendance(Attendance attendance, LocalDate now) {
+    private void updateContinuousAttendanceAndScore(Member member, LocalDate now) {
+        Attendance attendance = member.getAttendance();
         LocalDate lastAttendance = attendance.getLast_date();
+        if(!lastAttendance.isEqual(LocalDate.now())) {
+            //기본출석시 score+1
+            rankingRepository.increaseScore(member.getId().toString(),1);
+            //연속 출석일수 갱신
+            if(lastAttendance.plusDays(1).isEqual(now)) {
+                attendance.plusContinuousAttendance();
+                //연속출석시 score+1
+                rankingRepository.increaseScore(member.getId().toString(), 1);
+                //최대 연속 출석일수 갱신
+                if (attendance.getMax_continuous_attendance() < attendance.getContinuous_attendance()) {
+                    attendance.plusMaxContinuousAttendance();
+                }
+            } else {
+                //연속출석 초기화
+                attendance.initContinuousAttendance();
+            }
+        }
+        /*
         //연속 출석일수 갱신
         if(lastAttendance.plusDays(1).isEqual(now)) {
             attendance.plusContinuousAttendance();
+            //연속출석시 score+1
+            rankingRepository.addOrUpdate(member.getId().toString(),1);
             //최대 연속 출석일수 갱신
             if(attendance.getMax_continuous_attendance() < attendance.getContinuous_attendance()) {
                 attendance.plusMaxContinuousAttendance();
@@ -108,6 +127,8 @@ public class MemberService {
         } else if(!lastAttendance.isEqual(LocalDate.now())) {
             attendance.initContinuousAttendance();
         }
+
+         */
     }
 
 

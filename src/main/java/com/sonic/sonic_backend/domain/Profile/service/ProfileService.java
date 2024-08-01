@@ -7,10 +7,13 @@ import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.service.MemberService;
 import com.sonic.sonic_backend.domain.Profile.dto.AttendanceResponseDto;
+import com.sonic.sonic_backend.domain.Profile.dto.TierResponseDto;
 import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
 import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
+import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
+import com.sonic.sonic_backend.domain.Tier;
 import com.sonic.sonic_backend.exception.SocialMemberUpdatePassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,7 @@ public class ProfileService {
     private final MemberService memberService;
     private final S3Service s3Service;
     private final PasswordEncoder passwordEncoder;
+    private final RankingRepository rankingRepository;
 
     @Transactional(readOnly = true)
     public AttendanceResponseDto getAttendance() {
@@ -36,6 +40,15 @@ public class ProfileService {
         Attendance attendance = member.getAttendance();
 
         return AttendanceResponseDto.toDto(getWeekList(weekAttendance), attendance.getContinuous_attendance());
+    }
+
+    @Transactional
+    public TierResponseDto getTier() {
+        Member member = memberService.getCurrentMember();
+        Tier tier =  member.getMemberProfile().getTier();
+        return TierResponseDto.toDto(s3Service.getFullUrl(tier.url), tier.name
+                , (int)( rankingRepository.getMyRanking(member) / rankingRepository.getAllCount() ) *100
+                , rankingRepository.getScore(member));
     }
 
     public boolean[] getWeekList(WeekAttendance weekAttendance) {

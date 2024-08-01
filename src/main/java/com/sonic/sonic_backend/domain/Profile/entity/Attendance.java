@@ -35,6 +35,6 @@ public class Attendance extends BaseEntity {
 
     public void updateLastDate(LocalDate attendanceDate) { this.last_date = attendanceDate; }
     public void plusContinuousAttendance() { this.continuous_attendance+=1; }
-    public void initContinuousAttendance() { this.continuous_attendance=0; }
+    public void initContinuousAttendance() { this.continuous_attendance=1; }
     public void plusMaxContinuousAttendance() { this.max_continuous_attendance+=1; }
 }

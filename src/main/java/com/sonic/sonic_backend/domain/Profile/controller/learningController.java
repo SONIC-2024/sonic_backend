@@ -29,4 +29,9 @@ public class learningController {
     public Response getAttendance() {
         return success(GET_ATTENDANCE_SUCCESS, profileService.getAttendance());
     }
+
+    @Operation(summary = "티어 조회")
+    @ResponseStatus(OK)
+    @GetMapping("/tier")
+    public Response getTier() { return success(GET_TIER_SUCCESS, profileService.getTier()); }
 }
