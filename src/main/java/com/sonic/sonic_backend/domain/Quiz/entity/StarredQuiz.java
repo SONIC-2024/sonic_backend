@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "starred_quiz")
+@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

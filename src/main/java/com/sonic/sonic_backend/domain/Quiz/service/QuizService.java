@@ -4,24 +4,23 @@ import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.service.MemberService;
 import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
-import com.sonic.sonic_backend.domain.Quiz.dto.QuizLevel1ResponseDto;
-import com.sonic.sonic_backend.domain.Quiz.dto.QuizLevel2ResponseDto;
-import com.sonic.sonic_backend.domain.Quiz.dto.QuizLevel3ResponseDto;
+import com.sonic.sonic_backend.domain.Quiz.dto.*;
 import com.sonic.sonic_backend.domain.Quiz.entity.Quiz;
 import com.sonic.sonic_backend.domain.Quiz.entity.SolvedQuiz;
-import com.sonic.sonic_backend.domain.Quiz.entity.SolvedQuizId;
 import com.sonic.sonic_backend.domain.Quiz.entity.StarredQuiz;
 import com.sonic.sonic_backend.domain.Quiz.repository.QuizRepository;
 import com.sonic.sonic_backend.domain.Quiz.repository.SolvedQuizRepository;
 import com.sonic.sonic_backend.domain.Quiz.repository.StarredQuizRepository;
 import com.sonic.sonic_backend.exception.QuizNotFound;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Optional;
 
 @Service
@@ -40,6 +39,7 @@ public class QuizService {
     private final S3Service s3Service;
     private final MemberService memberService;
 
+    @Transactional(readOnly = true)
     public QuizLevel1ResponseDto getLevel1(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         String content = quiz.getContent();
@@ -54,6 +54,19 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent());
     }
+    public Page<StarredQuiz1Or3ResponseDto> getStarredLevel1(Pageable pageable) {
+        Member member = memberService.getCurrentMember();
+        return starredQuizRepository.findLevel1(member.getId(), pageable);
+    }
+    public Page<StarredQuiz1Or3ResponseDto> getStarredLevel3(Pageable pageable) {
+        Member member = memberService.getCurrentMember();
+        return starredQuizRepository.findLevel3(member.getId(), pageable);
+    }
+    public Page<StarredQuiz2ResponseDto> getStarredLevel2(Pageable pageable) {
+        Member member = memberService.getCurrentMember();
+        return starredQuizRepository.findLevel2(member.getId(), pageable);
+    }
+
 
     @Transactional
     public void solveQuiz(Long id) {
