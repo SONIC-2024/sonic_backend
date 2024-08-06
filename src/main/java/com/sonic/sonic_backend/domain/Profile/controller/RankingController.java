@@ -12,7 +12,7 @@ import static com.sonic.sonic_backend.response.Response.*;
 import static com.sonic.sonic_backend.response.Message.*;
 
 @RestController
-@RequestMapping(name = "/ranking")
+@RequestMapping(value = "/ranking")
 @RequiredArgsConstructor
 public class RankingController {
 

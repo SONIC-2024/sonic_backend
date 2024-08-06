@@ -65,4 +65,10 @@ public class Advice {
     public Response QuizNotFoundResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "퀴즈를 찾을 수 없습니다.");
     }
+
+    @ExceptionHandler(WordNotFound.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response WordNotFoundResponse() {
+        return Response.fail(HttpStatus.BAD_REQUEST, "단어를 찾을 수 없습니다.");
+    }
 }

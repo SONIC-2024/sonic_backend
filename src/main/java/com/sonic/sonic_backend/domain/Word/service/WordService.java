@@ -1,8 +1,12 @@
 package com.sonic.sonic_backend.domain.Word.service;
 
+import com.sonic.sonic_backend.configuration.AWS.S3Service;
 import com.sonic.sonic_backend.domain.Word.dto.WordListResponseDto;
+import com.sonic.sonic_backend.domain.Word.dto.WordResponseDto;
+import com.sonic.sonic_backend.domain.Word.entity.Word;
 import com.sonic.sonic_backend.domain.Word.repository.WordRepository;
 import com.sonic.sonic_backend.exception.TypeNotFound;
+import com.sonic.sonic_backend.exception.WordNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WordService {
 
     private final WordRepository wordRepository;
+    private final S3Service s3Service;
     private final String CONSONANT = "consonant";
     private final String VOWEL = "vowel";
     private final String WORD = "word";
@@ -23,6 +28,11 @@ public class WordService {
         return wordRepository.findByCategory(chooseCategory(c), p)
                 .map(WordListResponseDto::toDto);
     }
+    @Transactional(readOnly = true)
+    public WordResponseDto getWord(Long id) {
+        return getDto(wordRepository.findById(id).orElseThrow(WordNotFound::new));
+    }
+
     public String chooseCategory(String c) {
         switch (c) {
             case "c" -> { return CONSONANT; }
@@ -30,6 +40,10 @@ public class WordService {
             case "w" -> { return WORD; }
             default ->  throw new TypeNotFound();
         }
+    }
+    public WordResponseDto getDto(Word word) {
+        return WordResponseDto
+                .toDto(word.getId(), word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
     }
 
 

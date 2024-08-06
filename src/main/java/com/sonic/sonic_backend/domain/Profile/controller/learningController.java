@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "Learning")
 @RestController
-@RequestMapping(name = "/learning")
+@RequestMapping(value = "/learning")
 @RequiredArgsConstructor
 public class learningController {
 

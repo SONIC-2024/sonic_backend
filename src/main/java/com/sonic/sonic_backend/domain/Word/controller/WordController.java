@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "word")
 @RestController
-@RequestMapping(name = "/word")
+@RequestMapping(value = "/word")
 @RequiredArgsConstructor
 public class WordController {
 
@@ -25,8 +25,14 @@ public class WordController {
     @Operation(summary = "단어 목록 불러오기")
     @ResponseStatus(OK)
     @GetMapping("/list")
-    public Response getQuiz1(@RequestParam("category") String c, Pageable pageable) {
+    public Response getWordList(@RequestParam("category") String c, Pageable pageable) {
         return success(GET_WORD_LIST_SUCCESS, wordService.getList(c, pageable));
+    }
+    @Operation(summary = "단어 불러오기")
+    @ResponseStatus(OK)
+    @GetMapping()
+    public Response getWord(@RequestParam("word-id") Long id) {
+        return success(GET_WORD_SUCCESS, wordService.getWord(id));
     }
 
 }
