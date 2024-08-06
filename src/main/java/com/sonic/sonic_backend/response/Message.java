@@ -19,4 +19,5 @@ public class Message {
     public static String GET_QUIZ_3_SUCCESS = "퀴즈 레벨3 불러오기 성공했습니다";
     public static String SOLVE_QUIZ_SUCCESS = "퀴즈 정답처리 성공했습니다.";
     public static String STAR_QUIZ_SUCCESS = "즐겨찾기 등록, 취소하기 성공했습니다";
+    public static String GET_WORD_LIST_SUCCESS = "단어목록 불러오기 성공했습니다";
 }
