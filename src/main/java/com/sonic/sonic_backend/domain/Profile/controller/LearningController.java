@@ -1,7 +1,7 @@
 package com.sonic.sonic_backend.domain.Profile.controller;
 
-import com.sonic.sonic_backend.domain.Member.service.MemberService;
 import com.sonic.sonic_backend.domain.Profile.service.ProfileService;
+import com.sonic.sonic_backend.domain.Quiz.service.QuizService;
 import com.sonic.sonic_backend.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,9 +19,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping(value = "/learning")
 @RequiredArgsConstructor
-public class learningController {
+public class LearningController {
 
     private final ProfileService profileService;
+    private final QuizService quizService;
 
     @Operation(summary = "출석 조회")
     @ResponseStatus(OK)
@@ -34,4 +35,9 @@ public class learningController {
     @ResponseStatus(OK)
     @GetMapping("/tier")
     public Response getTier() { return success(GET_TIER_SUCCESS, profileService.getTier()); }
+
+    @Operation(summary = "문제 개수 불러오기")
+    @ResponseStatus(OK)
+    @GetMapping("/solved-quiz")
+    public Response getSolvedQuizNumbers() { return success(GET_SOLVED_QUIZ_NUMBERS, quizService.getSolvedQuizNumbers()); }
 }

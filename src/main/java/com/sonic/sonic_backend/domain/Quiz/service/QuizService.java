@@ -66,6 +66,10 @@ public class QuizService {
         Member member = memberService.getCurrentMember();
         return starredQuizRepository.findLevel2(member.getId(), pageable);
     }
+    public SolvedQuizNumberResponseDto getSolvedQuizNumbers() {
+        Member member = memberService.getCurrentMember();
+        return solvedQuizRepository.getSolvedQuizNumbers(member.getId());
+    }
 
 
     @Transactional
