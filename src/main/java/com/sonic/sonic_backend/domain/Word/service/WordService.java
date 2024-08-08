@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class WordService {
@@ -42,8 +44,17 @@ public class WordService {
         }
     }
     public WordResponseDto getDto(Word word) {
+        ArrayList<Long> ids = new ArrayList<>();
+        Long id = word.getId();
+        switch (id.intValue()) {
+            case 32 -> {ids.add(19L); ids.add(15L);}
+            case 33 -> {ids.add(19L); ids.add(25L);}
+            case 34 -> {ids.add(21L); ids.add(17L);}
+            case 35 -> {ids.add(21L); ids.add(27L);}
+            default -> ids.add(id);
+        }
         return WordResponseDto
-                .toDto(word.getId(), word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
+                .toDto(ids, word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
     }
 
 
