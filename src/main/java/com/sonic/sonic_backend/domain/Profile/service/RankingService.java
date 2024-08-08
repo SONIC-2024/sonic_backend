@@ -5,15 +5,10 @@ import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.service.MemberService;
 import com.sonic.sonic_backend.domain.Profile.dto.RankingResponseDto;
-import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
-import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
-import com.sonic.sonic_backend.domain.Profile.repository.AttendanceRepository;
-import com.sonic.sonic_backend.domain.Profile.repository.MemberProfileRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
 import com.sonic.sonic_backend.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,7 +25,7 @@ public class RankingService {
     public List<RankingResponseDto> getRanking() {
         Member member = memberService.getCurrentMember();
         //1. 요청한 회원의 순위 구하기
-        int myRanking = rankingRepository.getMyRanking(member);
+        Long myRanking = rankingRepository.getRankingById(member.getId());
         //2. 요청 회원의 -2, +2 순위 회원들의 id, score, ranking 얻기
         List<RankingResponseDto> rankingResponseDtos = rankingRepository.getRankingList(myRanking);
         //3. 동점자 순위 처리

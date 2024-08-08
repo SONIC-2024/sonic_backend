@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class TierResponseDto {
     private String tierImg;
     private String tier;
-    private int top;
+    private double top;
     private Long exp;
 
-    public static TierResponseDto toDto(String tierImg, String tier, int top, Long exp) {
+    public static TierResponseDto toDto(String tierImg, String tier, double top, Long exp) {
         return TierResponseDto.builder()
                 .tierImg(tierImg)
                 .tier(tier)

@@ -9,7 +9,8 @@ public enum Tier {
     SILVER_III("SILVER III", "SILVERIII.png", 60),
     GOLD_I("GOLD I","GOLDI.png", 10),
     GOLD_II("GOLD II","GOLDII.png",20),
-    GOLD_III("GOLD III","GOLDIII.png",30);
+    GOLD_III("GOLD III","GOLDIII.png",30),
+    IRON("IRON", "IRON.ong",100);
 
     public String name;
     public String url;

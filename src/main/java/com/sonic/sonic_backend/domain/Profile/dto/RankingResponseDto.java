@@ -15,7 +15,7 @@ public class RankingResponseDto {
             "exp": 12,
             "attendance": 3
      */
-    private int ranking;
+    private Long ranking;
     private String tierImg;
     private String profileImg;
     private Long exp;
@@ -23,7 +23,7 @@ public class RankingResponseDto {
     private Long id;
     private String nickname;
 
-    public void updateSameRanking(int ranking) {this.ranking = ranking;}
+    public void updateSameRanking(Long ranking) {this.ranking = ranking;}
     public void updateDto(String tierImg, String profileImg, int attendance, String nickname) {
         this.tierImg = tierImg;
         this.profileImg = profileImg;

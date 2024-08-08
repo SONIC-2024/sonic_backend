@@ -34,7 +34,7 @@ public class LearningController {
     @Operation(summary = "티어 조회")
     @ResponseStatus(OK)
     @GetMapping("/tier")
-    public Response getTier() { return success(GET_TIER_SUCCESS, profileService.getTier()); }
+    public Response getTier() { return success(GET_TIER_SUCCESS, profileService.getTierInfo()); }
 
     @Operation(summary = "문제 개수 불러오기")
     @ResponseStatus(OK)
