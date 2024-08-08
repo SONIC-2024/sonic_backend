@@ -46,9 +46,12 @@ public class ProfileService {
         double top = getTop(score);
         Tier tier = getTier(top);
         updateTier(member, tier);
-        return TierResponseDto.toDto(s3Service.getFullUrl(tier.url), tier.name
-                , top
-                , score);
+        return TierResponseDto.toDto(s3Service.getFullUrl(tier.url), tier.name, top, score);
+    }
+    @Transactional
+    public void updateRankingTiers(Member member) {
+        double top = getTop(rankingRepository.getScore(member));
+        updateTier(member, getTier(top));
     }
 
     public boolean[] getWeekList(WeekAttendance weekAttendance) {

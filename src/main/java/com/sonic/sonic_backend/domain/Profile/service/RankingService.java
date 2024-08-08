@@ -18,6 +18,7 @@ import java.util.List;
 public class RankingService {
     private final RankingRepository rankingRepository;
     private final MemberService memberService;
+    private final ProfileService profileService;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
@@ -52,6 +53,7 @@ public class RankingService {
     private List<RankingResponseDto> getCompleteDto(List<RankingResponseDto> rankingResponseDtos) {
         for(RankingResponseDto dto : rankingResponseDtos) {
             Member foundMember = memberRepository.findById(dto.getId()).orElseThrow(MemberNotFound::new);
+            profileService.updateRankingTiers(foundMember);
             dto.updateDto(
                     s3Service.getFullUrl(foundMember.getMemberProfile().getTier().url),
                     s3Service.getFullUrl(foundMember.getMemberProfile().getProfileImgUrl()),
