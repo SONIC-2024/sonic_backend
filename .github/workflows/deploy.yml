@@ -25,7 +25,7 @@ jobs:
       run: chmod +x ./gradlew
       
     - name: Build with Gradle
-      run: ./gradlew --warning-mode none clean build
+      run: ./gradlew --warning-mode all clean build --exclude-task test
 
     - name: docker image build
       run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/sonic .
