@@ -8,11 +8,19 @@ services:
       - "6379:6379"
     volumes:
       - ./redis/data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   spring:
     container_name: spring
     image: ${DOCKERHUB_USERNAME}/sonic
     depends_on:
-      - redis
+      redis:
+        - condition: service_healthy
     environment:
       - DATASOURCE_URL=${DATASOURCE_URL}
       - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
