@@ -14,8 +14,8 @@ services:
     image: ${DOCKERHUB_USERNAME}/sonic
     depends_on:
       - redis
-    WAIT_HOSTS: redis:6379
     environment:
+      - WAIT_HOSTS: redis:6379
       - DATASOURCE_URL=${DATASOURCE_URL}
       - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
       - DATASOURCE_USERNAME=${DATASOURCE_USERNAME}
