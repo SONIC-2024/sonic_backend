@@ -28,6 +28,7 @@ spring:
   redis:
     host: ${redis.host}
     port: ${redis.port}
+    password: ${redis.password}
 
   mail:
     host: smtp.gmail.com
