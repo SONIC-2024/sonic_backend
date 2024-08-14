@@ -18,7 +18,7 @@ public class RefreshTokenRepository {
         this.redisTemplate = redisTemplate;
     }
     //테스트용, 추후에 1주로 설정
-    private final int EXPIRE_TIME=60*3;
+    private final int EXPIRE_TIME=24;
     private final int BLACK_LISt_EXPIRE_DAY = 7;
 
     // <key : token, value : memberId> 형태로 저장
@@ -26,10 +26,10 @@ public class RefreshTokenRepository {
         //reissue 시 find by token이 필요하므로 이중으로 저장
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getMemberId());
-        redisTemplate.expire(refreshToken.getRefreshToken(),EXPIRE_TIME, TimeUnit.SECONDS);
+        redisTemplate.expire(refreshToken.getRefreshToken(),EXPIRE_TIME, TimeUnit.HOURS);
         //로그아웃 시 find by id가 필요하므로 이중으로 저장
         valueOperations.set(refreshToken.getMemberId(), refreshToken.getRefreshToken());
-        redisTemplate.expire(refreshToken.getMemberId(),EXPIRE_TIME, TimeUnit.SECONDS);
+        redisTemplate.expire(refreshToken.getMemberId(),EXPIRE_TIME, TimeUnit.HOURS);
     }
 
     public void saveBlackList(final String accessToken) {
