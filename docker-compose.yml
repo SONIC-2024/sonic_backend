@@ -8,6 +8,8 @@ services:
       - "6379:6379"
     volumes:
       - ./redis/data:/data
+    command: redis-server --save 60 1000 --loglevel notice --requirepass ${REDIS_PASSWORD}
+
 
   spring:
     container_name: spring
@@ -29,3 +31,5 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
