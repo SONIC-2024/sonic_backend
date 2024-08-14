@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Set up application.properties
-        run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/security.properties
+      run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/security.properties
 
     - name: Run chmod to make graldew executable
       run: chmod +x ./gradlew
