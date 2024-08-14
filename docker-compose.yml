@@ -30,4 +30,7 @@ services:
       - aws.credentials.access-key=${aws_credentials_access_key}
       - aws.region.static=${aws_region_static}
       - cloud.aws.s3.bucket=${cloud_aws_s3_bucket}
+      - redis.host=redis
+        redis.port=6379
+        redis.password=${REDIS_PASSWORD}
     restart: always
