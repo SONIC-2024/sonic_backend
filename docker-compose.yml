@@ -1,4 +1,9 @@
 version: "3.8"
+
+networks:
+  my-bridge:
+    external: true
+
 services:
   redis:
     image: redis:latest
@@ -9,6 +14,7 @@ services:
     volumes:
       - ./redis/data:/data
     command: redis-server --save 60 1000 --loglevel notice --requirepass ${REDIS_PASSWORD}
+    networks: my-bridge
 
 
   spring:
@@ -34,3 +40,4 @@ services:
         redis.port=6379
         redis.password=${REDIS_PASSWORD}
     restart: always
+    networks: my-bridge
