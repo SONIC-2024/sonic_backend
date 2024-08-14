@@ -14,7 +14,8 @@ services:
     volumes:
       - ./redis/data:/data
     command: redis-server --save 60 1000 --loglevel notice --requirepass ${REDIS_PASSWORD}
-    networks: my-bridge
+    networks:
+      - my-bridge
 
 
   spring:
@@ -40,4 +41,5 @@ services:
         redis.port=6379
         redis.password=${REDIS_PASSWORD}
     restart: always
-    networks: my-bridge
+    networks:
+      - my-bridge
