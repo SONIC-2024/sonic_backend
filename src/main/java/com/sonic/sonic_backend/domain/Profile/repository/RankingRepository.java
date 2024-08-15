@@ -75,4 +75,9 @@ public class RankingRepository {
         return zSetOperations.reverseRangeByScore(KEY, score, score, 0, 1).toString();
     }
 
+    public void removeById(Long id) {
+        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        zSetOperations.remove(KEY, id.toString());
+    }
+
 }

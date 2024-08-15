@@ -67,6 +67,7 @@ public class MemberService {
         attendanceRepository.delete(member.getAttendance());
         weekAttendanceRepository.delete(member.getWeekAttendance());
         memberProfileRepository.delete(member.getMemberProfile());
+        rankingRepository.removeById(member.getId());
     }
 
     @Transactional
