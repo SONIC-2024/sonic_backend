@@ -109,7 +109,6 @@ public class AuthService {
     }
 
 
-    @Transactional
     public ReissueDto reissue(ReissueDto reIssueDto) {
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(reIssueDto.getRefreshToken());
         //1. 리프레시토큰 검증
@@ -126,8 +125,8 @@ public class AuthService {
                 .build();
     }
 
-    @Transactional
     public void logOut(String header) {
+        System.out.println("header : "+header);
         String accessToken = resolveToken(header).orElseThrow(()->new RuntimeException("토큰이 비어있습니다."));
         Member member = memberService.getCurrentMember();
         //액세스토큰 블랙리스트 등록

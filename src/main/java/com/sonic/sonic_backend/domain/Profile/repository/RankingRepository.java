@@ -16,7 +16,6 @@ public class RankingRepository {
     private final RedisTemplate redisTemplate;
     private final String KEY = "ranking";
 
-    @Transactional
     public void addOrUpdate(String memberId, int exp) {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         zSetOperations.add(KEY, memberId, exp);
