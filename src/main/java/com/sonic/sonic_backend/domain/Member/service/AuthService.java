@@ -117,7 +117,7 @@ public class AuthService {
         Authentication authentication = jwtProvider.getAuthentication(reIssueDto.getAccessToken());
         TokenDto tokenDto = jwtProvider.generateToken(authentication);
         //3. 기존 리프레시토큰 삭제, 새 리프레시토큰 redis에 저장
-        refreshTokenRepository.delete(refreshToken.getRefreshToken());
+        refreshTokenRepository.deleteByRefreshToken(refreshToken.getRefreshToken());
         saveRefreshTokenReissue(tokenDto.getRefreshToken(), refreshToken.getMemberId());
         return ReissueDto.builder()
                 .accessToken(tokenDto.getAccessToken())
@@ -134,7 +134,7 @@ public class AuthService {
         //기존 리프레시토큰 삭제
         RefreshToken refreshToken = refreshTokenRepository.findById(member.getId().toString())
                 .orElseThrow(()-> new RuntimeException("이미 삭제된 토큰입니다"));
-        refreshTokenRepository.delete(refreshToken.getRefreshToken());
+        refreshTokenRepository.deleteByRefreshToken(refreshToken.getRefreshToken());
     }
 
     @Transactional

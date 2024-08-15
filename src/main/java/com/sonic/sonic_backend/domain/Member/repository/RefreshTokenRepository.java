@@ -50,12 +50,19 @@ public class RefreshTokenRepository {
         return Optional.of(new RefreshToken(refreshToken, id));
     }
 
-    public void delete(String refreshToken) {
+    public void deleteByRefreshToken(String refreshToken) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         //key:token 삭제
         String id = valueOperations.getAndDelete(refreshToken);
         //key:id 삭제
-        valueOperations.getAndDelete(id);
+        if(id!=null) valueOperations.getAndDelete(id);
+    }
+    public void deleteById(Long id) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        //key:token 삭제
+        String refreshToken = valueOperations.getAndDelete(id.toString());
+        //key:id 삭제
+        if(refreshToken!=null) valueOperations.getAndDelete(refreshToken);
     }
 
 }

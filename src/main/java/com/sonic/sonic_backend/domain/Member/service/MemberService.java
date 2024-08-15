@@ -7,6 +7,7 @@ import com.sonic.sonic_backend.domain.Member.entity.Member;
 import com.sonic.sonic_backend.domain.Member.repository.MemberGeneralRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberRepository;
 import com.sonic.sonic_backend.domain.Member.repository.MemberSocialRepository;
+import com.sonic.sonic_backend.domain.Member.repository.RefreshTokenRepository;
 import com.sonic.sonic_backend.domain.Profile.entity.Attendance;
 import com.sonic.sonic_backend.domain.Profile.entity.MemberProfile;
 import com.sonic.sonic_backend.domain.Profile.entity.WeekAttendance;
@@ -33,6 +34,7 @@ public class MemberService {
     private final WeekAttendanceRepository weekAttendanceRepository;
     private final AttendanceRepository attendanceRepository;
     private final RankingRepository rankingRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final S3Service s3Service;
 
     public Member getCurrentMember() {
@@ -53,11 +55,19 @@ public class MemberService {
                 .build();
     }
 
-    @Transactional
+    //@Transactional
+    //Redis 읽기연산 예외
     public void deleteMember() {
         Member member = getCurrentMember();
-        String email = member.getEmail();
+        Long id = member.getId();
 
+        refreshTokenRepository.deleteById(id);
+        deleteFromMySQL(member, member.getEmail());
+        rankingRepository.removeById(id);
+    }
+
+    @Transactional
+    private void deleteFromMySQL(Member member, String email) {
         if(email.contains("@")) {
             memberGeneralRepository.delete(memberGeneralRepository.findByMember(member));
         } else {
@@ -67,7 +77,6 @@ public class MemberService {
         attendanceRepository.delete(member.getAttendance());
         weekAttendanceRepository.delete(member.getWeekAttendance());
         memberProfileRepository.delete(member.getMemberProfile());
-        rankingRepository.removeById(member.getId());
     }
 
     @Transactional
