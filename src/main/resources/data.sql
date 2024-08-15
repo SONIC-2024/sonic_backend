@@ -1,4 +1,4 @@
-INSERT INTO WORD (word_id, category, content) VALUES
+INSERT INTO word(word_id, category, content) VALUES
 (1, 'consonant', 'ㄱ'),(2, 'consonant', 'ㄴ'),(3, 'consonant', 'ㄷ'),(4, 'consonant', 'ㄹ'),
 (5, 'consonant', 'ㅁ'),(6, 'consonant', 'ㅂ'),(7, 'consonant', 'ㅅ'),(8, 'consonant', 'ㅇ'),
 (9, 'consonant', 'ㅈ'),(10, 'consonant', 'ㅊ'),(11, 'consonant', 'ㅋ'),(12, 'consonant', 'ㅌ'),
@@ -10,7 +10,7 @@ INSERT INTO WORD (word_id, category, content) VALUES
 (31, 'vowel', 'ㅢ'),(32, 'vowel', 'ㅘ'),(33, 'vowel', 'ㅙ'),(34, 'vowel', 'ㅝ'),
 (35, 'vowel', 'ㅞ');
 
-INSERT INTO QUIZ(quiz_id, level, content, detailed_content) VALUES
+INSERT INTO quiz(quiz_id, level, content, detailed_content) VALUES
 (1, 1, '나비', '2,15,6,22'),
 (2, 1, '고슴도치', '1,19,7,23,5,3,19,10,24'),
 (3, 1, '기타', '1,24,12,15'),
