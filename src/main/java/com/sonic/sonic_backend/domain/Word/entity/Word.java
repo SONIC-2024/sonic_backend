@@ -1,16 +1,11 @@
 package com.sonic.sonic_backend.domain.Word.entity;
 
 import com.sonic.sonic_backend.domain.BaseEntity;
-import com.sonic.sonic_backend.domain.Quiz.entity.SolvedQuiz;
-import com.sonic.sonic_backend.domain.Quiz.entity.StarredQuiz;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -27,7 +22,4 @@ public class Word extends BaseEntity {
     @Column(name="object_url")
     private String objectUrl;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "word", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<StarredWord> starredWord = new ArrayList<>();
 }

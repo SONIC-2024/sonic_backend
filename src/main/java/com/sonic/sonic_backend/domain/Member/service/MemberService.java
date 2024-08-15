@@ -56,19 +56,17 @@ public class MemberService {
     @Transactional
     public void deleteMember() {
         Member member = getCurrentMember();
-
-        attendanceRepository.delete(member.getAttendance());
-        weekAttendanceRepository.delete(member.getWeekAttendance());
-        memberProfileRepository.delete(member.getMemberProfile());
-
         String email = member.getEmail();
-        memberRepository.delete(member);
 
         if(email.contains("@")) {
             memberGeneralRepository.delete(memberGeneralRepository.findByMember(member));
         } else {
             memberSocialRepository.delete(memberSocialRepository.findByMember(member));
         }
+        memberRepository.delete(member);
+        attendanceRepository.delete(member.getAttendance());
+        weekAttendanceRepository.delete(member.getWeekAttendance());
+        memberProfileRepository.delete(member.getMemberProfile());
     }
 
     @Transactional
