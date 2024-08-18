@@ -26,10 +26,10 @@ services:
     ports:
       - "8080:8080"
     logging:
-        driver: 'json-file',
+        driver: "json-file",
         options:
-          max-size: '10m'
-          max-file: '10'
+          max-size: "1000m"
+          max-file: "5"
     environment:
       - DATASOURCE_URL=${DATASOURCE_URL}
       - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
