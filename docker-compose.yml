@@ -28,7 +28,7 @@ services:
     logging:
         driver: "json-file"
         options:
-          max-size: "1000m"
+          max-size: "10m"
           max-file: "5"
     environment:
       - DATASOURCE_URL=${DATASOURCE_URL}
