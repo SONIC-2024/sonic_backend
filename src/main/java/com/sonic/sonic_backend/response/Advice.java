@@ -71,4 +71,8 @@ public class Advice {
     public Response WordNotFoundResponse() {
         return Response.fail(HttpStatus.BAD_REQUEST, "단어를 찾을 수 없습니다.");
     }
+
+    @ExceptionHandler(NoAuthAccessToken.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response NoAuthAccessTokenResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "권한정보가 없는 accessToken입니다.");}
 }

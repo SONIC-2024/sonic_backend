@@ -42,7 +42,7 @@ public class AuthController {
     @Operation(summary = "카카오 로그인")
     @ResponseStatus(OK)
     @GetMapping("/sign-in/kakao")
-    public Response signInKakao(@RequestParam("authCode") String authCode) throws IOException {
+    public Response signInKakao(@RequestParam("code") String authCode) throws IOException {
         return success(SIGN_IN_SUCCESS,authService.signInKakao(authCode));
     }
 

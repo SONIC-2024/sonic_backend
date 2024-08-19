@@ -1,6 +1,7 @@
 package com.sonic.sonic_backend.configuration.Auth;
 
 import com.sonic.sonic_backend.domain.Member.dto.common.TokenDto;
+import com.sonic.sonic_backend.exception.NoAuthAccessToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -83,7 +84,7 @@ public class JwtProvider {
         // 토큰 복호화
         Claims claims = parseClaims(token);
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new NoAuthAccessToken();
         }
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =

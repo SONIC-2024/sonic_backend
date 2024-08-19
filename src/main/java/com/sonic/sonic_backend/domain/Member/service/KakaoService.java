@@ -15,7 +15,7 @@ public class KakaoService {
 
     private static final String KAKAO_OAUTH_URL = "https://kauth.kakao.com";
     private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com";
-    private static final String REDIRECT_URI = "http://localhost:8080/kakao/callback";
+    @Value("${kakao.redirect.uri}") private String REDIRECT_URI;
     @Value("${kakao.client.id}") private String clientId;
 
 
