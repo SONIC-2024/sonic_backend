@@ -3,6 +3,9 @@ package com.sonic.sonic_backend.response;
 import com.sonic.sonic_backend.exception.*;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -75,4 +78,21 @@ public class Advice {
     @ExceptionHandler(NoAuthAccessToken.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response NoAuthAccessTokenResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "권한정보가 없는 accessToken입니다.");}
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response NotValidResponse(MethodArgumentNotValidException ex) {
+        String msg = "";
+        BindingResult error = ex.getBindingResult();
+        if(error.hasErrors()) {
+            String code = error.getFieldError().getCode();
+            String message = error.getFieldError().getDefaultMessage();
+            msg = code+" "+message;
+        }
+        return Response.fail(HttpStatus.BAD_REQUEST, msg);
+    }
+    @ExceptionHandler(TypeNotFound.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response TypeNotFoundResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "잘못된 category입니다.");}
+
 }
