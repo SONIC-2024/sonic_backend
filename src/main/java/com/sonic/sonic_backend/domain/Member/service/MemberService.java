@@ -17,6 +17,8 @@ import com.sonic.sonic_backend.domain.Profile.repository.RankingRepository;
 import com.sonic.sonic_backend.domain.Profile.repository.WeekAttendanceRepository;
 import com.sonic.sonic_backend.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,8 +46,13 @@ public class MemberService {
     }
 
     public GetMemberNameResponseDto getMemberName() {
-        MemberProfile memberProfile = getCurrentMember().getMemberProfile();
-        return GetMemberNameResponseDto.builder().name(memberProfile.getNickname()).build();
+        String name= "";
+        boolean isAuthentication = false;
+        if(isAuthenticated()) {
+            name = getCurrentMember().getMemberProfile().getNickname();
+            isAuthentication = true;
+        }
+        return GetMemberNameResponseDto.builder().name(name).isAuthenticated(isAuthentication).build();
     }
     public MemberProfileResponseDto getMemberProfile() {
         MemberProfile memberProfile = getCurrentMember().getMemberProfile();
@@ -137,6 +144,14 @@ public class MemberService {
         }
 
          */
+    }
+
+    public boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication==null || authentication instanceof AnonymousAuthenticationToken) {
+            return false;
+        }
+        return authentication.isAuthenticated();
     }
 
 

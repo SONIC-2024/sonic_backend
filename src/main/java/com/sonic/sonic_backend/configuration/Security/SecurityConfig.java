@@ -50,7 +50,8 @@ public class SecurityConfig  {
             "/auth/reissue",
             "/auth/send-mail",
             "/auth/password",
-            "/auth/sign-in/kakao"};
+            "/auth/sign-in/kakao",
+            "/member"};
 
 
     @Bean
