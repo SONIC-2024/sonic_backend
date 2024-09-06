@@ -11,6 +11,7 @@ import com.sonic.sonic_backend.domain.Quiz.entity.StarredQuiz;
 import com.sonic.sonic_backend.domain.Quiz.repository.QuizRepository;
 import com.sonic.sonic_backend.domain.Quiz.repository.SolvedQuizRepository;
 import com.sonic.sonic_backend.domain.Quiz.repository.StarredQuizRepository;
+import com.sonic.sonic_backend.exception.QuizLevelNotMatchException;
 import com.sonic.sonic_backend.exception.QuizNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public class QuizService {
     @Transactional(readOnly = true)
     public QuizLevel1ResponseDto getLevel1(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
+        checkLevel(quiz, 1);
         String content = quiz.getContent();
         return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content), getIdList(quiz)
                 , getIsStarred(id));
@@ -49,6 +51,7 @@ public class QuizService {
     @Transactional(readOnly = true)
     public QuizLevel2ResponseDto getLevel2(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
+        checkLevel(quiz, 2);
         String content = quiz.getContent();
         return QuizLevel2ResponseDto.toDto(content, getCandidateList(content), s3Service.getFullUrl(quiz.getDetailedContent())
                 , getIsStarred(id));
@@ -57,12 +60,16 @@ public class QuizService {
     @Transactional(readOnly = true)
     public QuizLevel3ResponseDto getLevel3(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
+        checkLevel(quiz, 3);
         return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent()
                 ,getIsStarred(id));
     }
 
     private boolean getIsStarred(Long id) {
         return starredQuizRepository.existsByMemberAndQuizId(memberService.getCurrentMember(), id);
+    }
+    private void checkLevel(Quiz quiz, int level) {
+        if(quiz.getLevel()!=level) throw new QuizLevelNotMatchException();
     }
 
     public Page<StarredQuiz1Or3ResponseDto> getStarredLevel1(Pageable pageable) {

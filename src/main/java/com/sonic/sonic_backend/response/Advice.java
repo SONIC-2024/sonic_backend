@@ -95,4 +95,7 @@ public class Advice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response TypeNotFoundResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "잘못된 category입니다.");}
 
+    @ExceptionHandler(QuizLevelNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response QuizLevelNotMatchResponse() {return Response.fail(HttpStatus.BAD_REQUEST, "퀴즈 레벨이 일치하지 않습니다.");}
 }
