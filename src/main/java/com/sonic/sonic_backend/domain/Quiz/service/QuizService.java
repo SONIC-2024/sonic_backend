@@ -43,17 +43,28 @@ public class QuizService {
     public QuizLevel1ResponseDto getLevel1(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         String content = quiz.getContent();
-        return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content), getIdList(quiz));
+        return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content), getIdList(quiz)
+                , getIsStarred(id));
     }
+    @Transactional(readOnly = true)
     public QuizLevel2ResponseDto getLevel2(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         String content = quiz.getContent();
-        return QuizLevel2ResponseDto.toDto(content, getCandidateList(content), s3Service.getFullUrl(quiz.getDetailedContent()));
+        return QuizLevel2ResponseDto.toDto(content, getCandidateList(content), s3Service.getFullUrl(quiz.getDetailedContent())
+                , getIsStarred(id));
     }
+
+    @Transactional(readOnly = true)
     public QuizLevel3ResponseDto getLevel3(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
-        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent());
+        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent()
+                ,getIsStarred(id));
     }
+
+    private boolean getIsStarred(Long id) {
+        return starredQuizRepository.existsByMemberAndQuizId(memberService.getCurrentMember(), id);
+    }
+
     public Page<StarredQuiz1Or3ResponseDto> getStarredLevel1(Pageable pageable) {
         Member member = memberService.getCurrentMember();
         return starredQuizRepository.findLevel1(member.getId(), pageable);
@@ -138,4 +149,6 @@ public class QuizService {
         }
         return candidateList;
     }
+
+
 }

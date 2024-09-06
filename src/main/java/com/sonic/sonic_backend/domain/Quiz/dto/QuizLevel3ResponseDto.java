@@ -12,11 +12,13 @@ import lombok.NoArgsConstructor;
 public class QuizLevel3ResponseDto {
     private Long id;
     private String content;
+    private boolean isStarred;
 
-    public static QuizLevel3ResponseDto toDto(Long id, String content) {
+    public static QuizLevel3ResponseDto toDto(Long id, String content, boolean isStarred) {
         return QuizLevel3ResponseDto.builder()
                 .id(id)
                 .content(content)
+                .isStarred(isStarred)
                 .build();
     }
 }
