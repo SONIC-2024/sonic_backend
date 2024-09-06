@@ -141,10 +141,10 @@ public class QuizService {
 
     public String[] getCandidateList(String content) {
         String[] candidateList = new String[4];
-        candidateList[(int)(Math.random()*5)] = content;
+        candidateList[(int)(Math.random()*4)] = content;
         for (int i = 0; i < 4; i++) {
             if(candidateList[i]==null) {
-                candidateList[i] = candidateChoiceList[(int)(Math.random()*29+1)];
+                candidateList[i] = candidateChoiceList[(int)(Math.random()*28+1)];
             }
         }
         return candidateList;
