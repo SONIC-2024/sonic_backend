@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "quiz")
 @RestController
-@RequestMapping(name = "/quiz")
+@RequestMapping(value = "/quiz")
 @RequiredArgsConstructor
 public class QuizController {
 

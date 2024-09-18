@@ -61,7 +61,7 @@ public class QuizService {
     public QuizLevel3ResponseDto getLevel3(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         checkLevel(quiz, 3);
-        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent()
+        return QuizLevel3ResponseDto.toDto(id, quiz.getContent()
                 ,getIsStarred(id));
     }
 
