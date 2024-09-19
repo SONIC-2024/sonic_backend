@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -19,6 +20,7 @@ public class Word extends BaseEntity {
 
     private String category;
     private String content;
+    private String hand;
     @Column(name="object_url")
     private String objectUrl;
 

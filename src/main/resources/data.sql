@@ -8,7 +8,18 @@ INSERT INTO word(word_id, category, content) VALUES
 (23, 'vowel', 'ㅡ'),(24, 'vowel', 'ㅣ'),(25, 'vowel', 'ㅐ'),(26, 'vowel', 'ㅒ'),
 (27, 'vowel', 'ㅔ'),(28, 'vowel', 'ㅖ'),(29, 'vowel', 'ㅚ'),(30, 'vowel', 'ㅟ'),
 (31, 'vowel', 'ㅢ'),(32, 'vowel', 'ㅘ'),(33, 'vowel', 'ㅙ'),(34, 'vowel', 'ㅝ'),
-(35, 'vowel', 'ㅞ');
+(35, 'vowel', 'ㅞ'),
+(36, 'consonant', 'ㄱ'),(37, 'consonant', 'ㄴ'),(38, 'consonant', 'ㄷ'),(39, 'consonant', 'ㄹ'),
+(40, 'consonant', 'ㅁ'),(41, 'consonant', 'ㅂ'),(42, 'consonant', 'ㅅ'),(43, 'consonant', 'ㅇ'),
+(44, 'consonant', 'ㅈ'),(45, 'consonant', 'ㅊ'),(46, 'consonant', 'ㅋ'),(47, 'consonant', 'ㅌ'),
+(48, 'consonant', 'ㅍ'),(49, 'consonant', 'ㅎ'),
+(50, 'vowel', 'ㅏ'),(51, 'vowel', 'ㅑ'),(52, 'vowel', 'ㅓ'),(53, 'vowel', 'ㅕ'),
+(54, 'vowel', 'ㅗ'),(55, 'vowel', 'ㅛ'),(56, 'vowel', 'ㅜ'),(57, 'vowel', 'ㅠ'),
+(58, 'vowel', 'ㅡ'),(59, 'vowel', 'ㅣ'),(60, 'vowel', 'ㅐ'),(61, 'vowel', 'ㅒ'),
+(62, 'vowel', 'ㅔ'),(63, 'vowel', 'ㅖ'),(64, 'vowel', 'ㅚ'),(65, 'vowel', 'ㅟ'),
+(66, 'vowel', 'ㅢ'),(67, 'vowel', 'ㅘ'),(68, 'vowel', 'ㅙ'),(69, 'vowel', 'ㅝ'),
+(70, 'vowel', 'ㅞ'),
+(71, 'word', '사랑'), (72, 'word', '사랑');
 
 INSERT INTO quiz(quiz_id, level, content, detailed_content) VALUES
 (1, 1, '나비', '2,15,6,22'),

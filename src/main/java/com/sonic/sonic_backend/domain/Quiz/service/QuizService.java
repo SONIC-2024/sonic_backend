@@ -32,6 +32,8 @@ public class QuizService {
     char[] last = {' ', 'ㄱ','ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ','ㄻ', 'ㄼ', 'ㄽ', 'ㄾ','ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'};
     String[] candidateChoiceList = {"ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"
             ,"ㅏ","ㅑ","ㅓ","ㅕ","ㅜ","ㅠ","ㅡ","ㅣ","ㅐ","ㅒ","ㅔ","ㅖ","ㅚ","ㅟ","ㅢ"};
+    private final long VOWEL_CONSONANT_LEFT_HAND_WEIGHT = 35;
+    private final long WORD_LEFT_HAND_WEIGHT = 1;
 
     private final QuizRepository quizRepository;
     private final SolvedQuizRepository solvedQuizRepository;
@@ -45,7 +47,8 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         checkLevel(quiz, 1);
         String content = quiz.getContent();
-        return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content), getIdList(quiz)
+        return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content)
+                , getIdList(quiz, memberService.getCurrentMember().getMemberProfile().getHand())
                 , getIsStarred(id));
     }
     @Transactional(readOnly = true)
@@ -61,7 +64,13 @@ public class QuizService {
     public QuizLevel3ResponseDto getLevel3(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         checkLevel(quiz, 3);
-        return QuizLevel3ResponseDto.toDto(id, quiz.getContent()
+
+        long handWeight = 0L;
+        if(memberService.getCurrentMember().getMemberProfile().getHand().equals("left")){
+            handWeight=WORD_LEFT_HAND_WEIGHT;
+        }
+
+        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent())+handWeight, quiz.getContent()
                 ,getIsStarred(id));
     }
 
@@ -142,8 +151,12 @@ public class QuizService {
         }
         return result;
     }
-    public long[] getIdList(Quiz quiz) {
-        return Arrays.stream(quiz.getDetailedContent().split(",")).mapToLong(Long::parseLong).toArray();
+    public long[] getIdList(Quiz quiz, String hand) {
+        long[] ids = Arrays.stream(quiz.getDetailedContent().split(",")).mapToLong(Long::parseLong).toArray();
+        if(hand.equals("left")) {
+            for (int i = 0; i < ids.length; i++) ids[i] += VOWEL_CONSONANT_LEFT_HAND_WEIGHT;
+        }
+        return ids;
     }
 
     public String[] getCandidateList(String content) {

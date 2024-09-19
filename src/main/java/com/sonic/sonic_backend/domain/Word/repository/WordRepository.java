@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
-    Page<Word> findByCategory(String category, Pageable p);
+    Page<Word> findByCategoryAndHand(String category, String hand, Pageable p);
 }
