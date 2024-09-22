@@ -49,7 +49,7 @@ public class QuizService {
         String content = quiz.getContent();
         return QuizLevel1ResponseDto.toDto(content, getDetailedContent(content)
                 , getIdList(quiz, memberService.getCurrentMember().getMemberProfile().getHand())
-                , getIsStarred(id));
+                , getIsStarred(id),id);
     }
     @Transactional(readOnly = true)
     public QuizLevel2ResponseDto getLevel2(Long id) {
@@ -57,7 +57,7 @@ public class QuizService {
         checkLevel(quiz, 2);
         String content = quiz.getContent();
         return QuizLevel2ResponseDto.toDto(content, getCandidateList(content), s3Service.getFullUrl(quiz.getDetailedContent())
-                , getIsStarred(id));
+                , getIsStarred(id),id);
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +71,7 @@ public class QuizService {
         }
 
         return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent())+handWeight, quiz.getContent()
-                ,getIsStarred(id));
+                ,getIsStarred(id),id);
     }
 
     private boolean getIsStarred(Long id) {
