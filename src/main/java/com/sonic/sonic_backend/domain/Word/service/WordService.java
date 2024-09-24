@@ -53,7 +53,7 @@ public class WordService {
         Long id = word.getId();
         if(word.getCategory().equals(WORD)) {
             return WordResponseDto
-                    .toDto(getWordIds(hand, id), word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
+                    .toDto(getWordIds(id), word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
         } else {
             return WordResponseDto
                     .toDto(getVowelOrConsonantIds(hand, id), word.getContent(), s3Service.getFullUrl(word.getObjectUrl()));
@@ -61,13 +61,9 @@ public class WordService {
 
     }
 
-    public ArrayList<Long> getWordIds(String hand, Long id) {
+    public ArrayList<Long> getWordIds(Long id) {
         ArrayList<Long> ids = new ArrayList<>();
-
-        long handWeight=0L;
-        if(hand.equals("left")) handWeight=WORD_LEFT_HAND_WEIGHT;
-        ids.add(id+handWeight);
-
+        ids.add(id);
         return ids;
     }
     public ArrayList<Long> getVowelOrConsonantIds(String hand, Long id) {

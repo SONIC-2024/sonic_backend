@@ -51,6 +51,7 @@ public class SecurityConfig  {
             "/auth/send-mail",
             "/auth/password",
             "/auth/sign-in/kakao",
+            "/word/list",
             "/member"};
 
 

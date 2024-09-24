@@ -112,7 +112,7 @@ public class ProfileService {
     @Transactional
     public void updatePassword(String password) {
         MemberGeneral memberGeneral = memberGeneralRepository.findByMember(memberService.getCurrentMember());
-        //TODO: 로직 변경시 삭제
+
         if(memberGeneral==null) {throw new SocialMemberUpdatePassword();}
         memberGeneral.updatePassword(passwordEncoder.encode(password));
     }

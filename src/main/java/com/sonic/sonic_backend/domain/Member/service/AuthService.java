@@ -169,7 +169,7 @@ public class AuthService {
     @Transactional
     private void saveMember(SignUpRequestDto signUpRequestDto, boolean isGeneral) {
         MemberProfile memberProfile = memberProfileRepository.save(
-                signUpRequestDto.toMemberProfileEntity(signUpRequestDto, s3Service.getFullUrl("profile.jpg")));
+                signUpRequestDto.toMemberProfileEntity(signUpRequestDto, "profile.jpg"));
         Attendance attendance = attendanceRepository.save(getInitialAttendance());
         WeekAttendance weekAttendance = weekAttendanceRepository.save(getEmptyWeekAttendance());
         Member member = signUpRequestDto.toMemberEntity(signUpRequestDto.getEmail(),memberProfile,attendance,weekAttendance);

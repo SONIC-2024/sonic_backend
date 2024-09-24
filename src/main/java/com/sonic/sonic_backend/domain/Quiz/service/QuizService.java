@@ -65,12 +65,7 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(id).orElseThrow(QuizNotFound::new);
         checkLevel(quiz, 3);
 
-        long handWeight = 0L;
-        if(memberService.getCurrentMember().getMemberProfile().getHand().equals("left")){
-            handWeight=WORD_LEFT_HAND_WEIGHT;
-        }
-
-        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent())+handWeight, quiz.getContent()
+        return QuizLevel3ResponseDto.toDto(Long.valueOf(quiz.getDetailedContent()), quiz.getContent()
                 ,getIsStarred(id),id);
     }
 

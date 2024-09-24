@@ -19,7 +19,9 @@ INSERT INTO word(word_id, category, content) VALUES
 (62, 'vowel', 'ㅔ'),(63, 'vowel', 'ㅖ'),(64, 'vowel', 'ㅚ'),(65, 'vowel', 'ㅟ'),
 (66, 'vowel', 'ㅢ'),(67, 'vowel', 'ㅘ'),(68, 'vowel', 'ㅙ'),(69, 'vowel', 'ㅝ'),
 (70, 'vowel', 'ㅞ'),
-(71, 'word', '사랑'), (72, 'word', '사랑');
+(71, 'word', '안녕하세요'), (72, 'word', '만나다'),(73, 'word', '헤어지다'),(74, 'word', '고맙다')
+(75, 'word', '매우, 아주'),(76, 'word', '부탁하다'),(77, 'word', '모두'),(78, 'word', '남자')
+,(79, 'word', '여자'),(80, 'word', '아프다')
 
 INSERT INTO quiz(quiz_id, level, content, detailed_content) VALUES
 (1, 1, '나비', '2,15,6,22'),
@@ -53,4 +55,20 @@ INSERT INTO quiz(quiz_id, level, content, detailed_content) VALUES
 (29, 1, '상자', '7,15,8,9,15'),
 (30, 1, '애벌레', '8,25,6,4,4,27'),
 (100,2, 'ㅗ', 'sample url'),
-(200,3, '나비', '36');
+(101, 2, 'ㅛ', 'sample url'),(102, 2, 'ㅜ', 'sample url'),(103, 2, 'ㅠ', 'sample url'),
+(104, 2, 'ㅡ', 'sample url'),(105, 2, 'ㅢ', 'sample url'),(106, 2, 'ㄱ', 'sample url'),
+(107, 2, 'ㄹ', 'sample url'),(108, 2, 'ㅁ', 'sample url'),(109, 2, 'ㅂ', 'sample url'),
+(110, 2, 'ㅇ', 'sample url'),(111, 2, 'ㅊ', 'sample url'),(112, 2, 'ㅒ', 'sample url'),
+(113, 2, 'ㄷ', 'sample url'),(114, 2, 'ㅡ', 'sample url'),(115, 2, 'ㅟ', 'sample url'),
+(116, 2, 'ㅛ', 'sample url'),(117, 2, 'ㅖ', 'sample url'),(118, 2, 'ㅚ', 'sample url'),
+(119, 2, 'ㅈ', 'sample url'),(120, 2, 'ㅍ', 'sample url'),(121, 2, 'ㅑ', 'sample url'),
+(122, 2, 'ㅎ', 'sample url'),(123, 2, 'ㅅ', 'sample url'),(124, 2, 'ㅠ', 'sample url'),
+(125, 2, 'ㅓ', 'sample url'),(126, 2, 'ㅢ', 'sample url'),(127, 2, 'ㄱ', 'sample url'),
+(128, 2, 'ㄹ', 'sample url'),(129, 2, 'ㅂ', 'sample url'),(130, 2, 'ㅂ', 'sample url'),
+(131, 2, 'ㅇ', 'sample url'),(132, 2, 'ㅊ', 'sample url'),(133, 2, 'ㅒ', 'sample url'),
+(134, 2, 'ㄷ', 'sample url'),(135, 2, 'ㅠ', 'sample url'),(136, 2, 'ㅎ', 'sample url'),
+(137, 2, 'ㅢ', 'sample url'),(138, 2, 'ㅖ', 'sample url'),(139, 2, 'ㅜ', 'sample url'),
+(140, 2, 'ㅈ', 'sample url'),
+(200,3, '안녕하세요', '71'),
+(201,3,'만나다','72'),(202,3,'헤어지다',73), (203,3,'고맙다',74), (204,3,'매우, 아주',75),(205,3,'부탁하다',76)
+, (206,3,'모두',77),(207,3,'남자',78),(208,3,'여자',79),(209,3,'아프다',80);
